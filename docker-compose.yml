@@ -1,0 +1,53 @@
+version: "3.9"
+
+services:
+  webapp:
+    container_name: app_container
+    build: .
+    env_file:
+      - .env
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/app
+    depends_on:
+      - postgresdb
+      # - redis
+    command: air
+    networks:
+      - go_api
+
+  postgresdb:
+    container_name: db_container
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - 5400:5432
+    networks:
+      - go_api
+    # Mount init.sql file to automatically run
+    # and create tables for us.
+    # everything in data folder
+    # is executed as soon as container is up nd running.
+    # volumes:
+    #   - ./db/db-dump.sql:/docker-entrypoint-initdb.d/db-dump.sql
+
+  # redis:
+  #   container_name: redis_container
+  #   image: redis:alpine
+  #   environment:
+  #     - REDIS_PASSWORD=${REDIS_PASSWORD}
+  #   ports:
+  #     - 5000:6379
+  #   command: redis-server /usr/local/etc/redis/redis.conf --requirepass ${REDIS_PASSWORD}
+  #   volumes:
+  #     - $PWD/redis.conf:/usr/local/etc/redis/redis.conf
+  #   networks:
+  #     - go_api
+
+networks:
+  go_api:
+    driver: bridge
