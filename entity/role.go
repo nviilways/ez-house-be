@@ -8,3 +8,7 @@ type Role struct {
 	Name string `json:"name"`
 	UserID uint `json:"-"`
 }
+
+func (Role) TableName() string {
+	return "roles_tab"
+}

@@ -8,3 +8,7 @@ type City struct {
 	Name string `json:"name"`
 	UserID uint `json:"-"`	
 }
+
+func (City) TableName() string {
+	return "cities_tab"
+}

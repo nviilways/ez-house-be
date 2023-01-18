@@ -12,5 +12,10 @@ type User struct {
 	CityId uint `json:"city_id"`
 	City City `json:"city"`
 	RoleId uint `json:"role_id"`
-	Role Role`json:"role"`
+	Role Role `json:"role"`
+	Wallet Wallet `json:"wallet"`
+}
+
+func (User) TableName() string {
+	return "users_tab"
 }
