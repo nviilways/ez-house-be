@@ -9,9 +9,9 @@ type User struct {
 	Password string `json:"-"`
 	FullName string `json:"full_name"`
 	Address string `json:"address"`
-	CityId uint `json:"city_id"`
+	CityID uint `json:"city_id"`
 	City City `json:"city"`
-	RoleId uint `json:"role_id"`
+	RoleID uint `json:"role_id"`
 	Role Role `json:"role"`
 	Wallet Wallet `json:"wallet"`
 }

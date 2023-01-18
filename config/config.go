@@ -25,6 +25,7 @@ func getENV(key, defaultVal string) string {
 var (
 	ENV = getENV("ENV", "testing")
 	AppName = "Ez House"
+	SecretKey = getENV("SECRET_KEY", "")
 	DBConfig = dbConfig {
 		Host: getENV("DB_HOST", "localhost"),
 		User: getENV("DB_USER", ""),
