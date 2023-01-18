@@ -1,14 +1,15 @@
 package usecase
 
 import (
+	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/dto"
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/entity"
+	errs "git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/error"
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/repository"
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/utils"
-	errs "git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/error"
 )
 
 type UserUsecase interface {
-	SignIn(string, *entity.User) (*entity.User, error)
+	SignIn(string, *entity.User) (*dto.Token, error)
 	SignUp(*entity.User) (*entity.User, error)
 	GetUserByID(*entity.User) (*entity.User, error)
 }
@@ -27,7 +28,7 @@ func NewUserUsecase(cfg *UserUConfig) UserUsecase {
 	}
 }
 
-func (u *userUsecaseImpl) SignIn(pw string, user *entity.User) (*entity.User, error) {
+func (u *userUsecaseImpl) SignIn(pw string, user *entity.User) (*dto.Token, error) {
 	result, err := u.userRepository.SignIn(user)
 
 	if(err != nil) {
@@ -36,6 +37,7 @@ func (u *userUsecaseImpl) SignIn(pw string, user *entity.User) (*entity.User, er
 
 	isValid := utils.ComparePassword(result.Password, pw)
 	if(isValid) {
+		result, _ := utils.GenerateAccessToken(result)
 		return result, nil
 	}
 
