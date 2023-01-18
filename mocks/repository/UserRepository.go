@@ -13,11 +13,11 @@ type UserRepository struct {
 }
 
 // GetUserByID provides a mock function with given fields: _a0
-func (_m *UserRepository) GetUserByID(_a0 *entity.User) (*entity.User, error) {
+func (_m *UserRepository) GetUserByID(_a0 uint) (*entity.User, error) {
 	ret := _m.Called(_a0)
 
 	var r0 *entity.User
-	if rf, ok := ret.Get(0).(func(*entity.User) *entity.User); ok {
+	if rf, ok := ret.Get(0).(func(uint) *entity.User); ok {
 		r0 = rf(_a0)
 	} else {
 		if ret.Get(0) != nil {
@@ -26,7 +26,7 @@ func (_m *UserRepository) GetUserByID(_a0 *entity.User) (*entity.User, error) {
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(*entity.User) error); ok {
+	if rf, ok := ret.Get(1).(func(uint) error); ok {
 		r1 = rf(_a0)
 	} else {
 		r1 = ret.Error(1)

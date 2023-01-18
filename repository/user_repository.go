@@ -9,7 +9,7 @@ import (
 type UserRepository interface {
 	SignIn(*entity.User) (*entity.User, error)
 	SignUp(*entity.User) (*entity.User, error)
-	GetUserByID(*entity.User) (*entity.User, error)
+	GetUserByID(uint) (*entity.User, error)
 }
 
 type userRepositoryImpl struct {
@@ -60,8 +60,9 @@ func (u *userRepositoryImpl) SignUp(user *entity.User) (*entity.User, error) {
 	return user, nil
 }
 
-func (u *userRepositoryImpl) GetUserByID(user *entity.User) (*entity.User, error) {
-	err := u.db.Where("id = ?", user.ID).Preload("Wallet").Find(&user).Error
+func (u *userRepositoryImpl) GetUserByID(user_id uint) (*entity.User, error) {
+	var user *entity.User
+	err := u.db.Where("id = ?", user_id).Preload("Wallet").Find(&user).Error
 
 	if(err != nil) {
 		return nil, err

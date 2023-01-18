@@ -3,7 +3,9 @@
 package mocks
 
 import (
+	dto "git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/dto"
 	entity "git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/entity"
+
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -13,11 +15,11 @@ type UserUsecase struct {
 }
 
 // GetUserByID provides a mock function with given fields: _a0
-func (_m *UserUsecase) GetUserByID(_a0 *entity.User) (*entity.User, error) {
+func (_m *UserUsecase) GetUserByID(_a0 uint) (*entity.User, error) {
 	ret := _m.Called(_a0)
 
 	var r0 *entity.User
-	if rf, ok := ret.Get(0).(func(*entity.User) *entity.User); ok {
+	if rf, ok := ret.Get(0).(func(uint) *entity.User); ok {
 		r0 = rf(_a0)
 	} else {
 		if ret.Get(0) != nil {
@@ -26,7 +28,7 @@ func (_m *UserUsecase) GetUserByID(_a0 *entity.User) (*entity.User, error) {
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(*entity.User) error); ok {
+	if rf, ok := ret.Get(1).(func(uint) error); ok {
 		r1 = rf(_a0)
 	} else {
 		r1 = ret.Error(1)
@@ -36,15 +38,15 @@ func (_m *UserUsecase) GetUserByID(_a0 *entity.User) (*entity.User, error) {
 }
 
 // SignIn provides a mock function with given fields: _a0, _a1
-func (_m *UserUsecase) SignIn(_a0 string, _a1 *entity.User) (*entity.User, error) {
+func (_m *UserUsecase) SignIn(_a0 string, _a1 *entity.User) (*dto.Token, error) {
 	ret := _m.Called(_a0, _a1)
 
-	var r0 *entity.User
-	if rf, ok := ret.Get(0).(func(string, *entity.User) *entity.User); ok {
+	var r0 *dto.Token
+	if rf, ok := ret.Get(0).(func(string, *entity.User) *dto.Token); ok {
 		r0 = rf(_a0, _a1)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*entity.User)
+			r0 = ret.Get(0).(*dto.Token)
 		}
 	}
 

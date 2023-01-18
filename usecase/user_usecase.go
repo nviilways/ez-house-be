@@ -11,7 +11,7 @@ import (
 type UserUsecase interface {
 	SignIn(string, *entity.User) (*dto.Token, error)
 	SignUp(*entity.User) (*entity.User, error)
-	GetUserByID(*entity.User) (*entity.User, error)
+	GetUserByID(uint) (*entity.User, error)
 }
 
 type userUsecaseImpl struct {
@@ -58,8 +58,8 @@ func (u *userUsecaseImpl) SignUp(user *entity.User) (*entity.User, error) {
 	return result, nil
 }
 
-func (u *userUsecaseImpl) GetUserByID(user *entity.User) (*entity.User, error) {
-	result, err := u.userRepository.GetUserByID(user)
+func (u *userUsecaseImpl) GetUserByID(user_id uint) (*entity.User, error) {
+	result, err := u.userRepository.GetUserByID(user_id)
 
 	if(err != nil) {
 		return nil, err
