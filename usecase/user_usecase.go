@@ -9,6 +9,8 @@ import (
 
 type UserUsecase interface {
 	SignIn(string, *entity.User) (*entity.User, error)
+	SignUp(*entity.User) (*entity.User, error)
+	GetUserByID(*entity.User) (*entity.User, error)
 }
 
 type userUsecaseImpl struct {
@@ -38,4 +40,28 @@ func (u *userUsecaseImpl) SignIn(pw string, user *entity.User) (*entity.User, er
 	}
 
 	return nil, errs.ErrInvalidCredential
+}
+
+func (u *userUsecaseImpl) SignUp(user *entity.User) (*entity.User, error) {
+	hashedPw, _ := utils.HashAndSalt(user.Password)
+
+	user.Password = hashedPw
+
+	result, err := u.userRepository.SignUp(user)
+
+	if(err != nil) {
+		return nil, err
+	}
+
+	return result, nil
+}
+
+func (u *userUsecaseImpl) GetUserByID(user *entity.User) (*entity.User, error) {
+	result, err := u.userRepository.GetUserByID(user)
+
+	if(err != nil) {
+		return nil, err
+	}
+
+	return result, nil
 }

@@ -8,7 +8,7 @@ import (
 
 type UserRepository interface {
 	SignIn(*entity.User) (*entity.User, error)
-	Register(*entity.User) (*entity.User, error)
+	SignUp(*entity.User) (*entity.User, error)
 	GetUserByID(*entity.User) (*entity.User, error)
 }
 
@@ -36,7 +36,7 @@ func (u *userRepositoryImpl) SignIn(user *entity.User) (*entity.User, error) {
 	return user, nil
 }
 
-func (u *userRepositoryImpl) Register(user *entity.User) (*entity.User, error) {
+func (u *userRepositoryImpl) SignUp(user *entity.User) (*entity.User, error) {
 	var wallet entity.Wallet
 
 	err := u.db.Transaction(func(tx *gorm.DB) error {
