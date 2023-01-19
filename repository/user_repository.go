@@ -40,7 +40,7 @@ func (u *userRepositoryImpl) SignUp(user *entity.User) (*entity.User, error) {
 	var wallet entity.Wallet
 
 	err := u.db.Transaction(func(tx *gorm.DB) error {
-		if affected := tx.FirstOrCreate(&user).RowsAffected; affected == 0 {
+		if affected := tx.Where("email = ?", user.Email).FirstOrCreate(&user).RowsAffected; affected == 0 {
 			return errs.ErrDuplicateEntry
 		}
 
