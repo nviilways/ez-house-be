@@ -3,6 +3,7 @@ module git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house
 go 1.18
 
 require (
+	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-gonic/gin v1.8.2
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/golang-jwt/jwt/v4 v4.4.3

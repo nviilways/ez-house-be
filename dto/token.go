@@ -1,5 +1,5 @@
 package dto
 
 type Token struct {
-	AccessToken string `json:"authorization" binding:"required"`
+	AccessToken string `json:"token" binding:"required"`
 }
