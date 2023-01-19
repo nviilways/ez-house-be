@@ -33,4 +33,5 @@ var (
 		DBName: getENV("DB_NAME", ""),
 		Port: getENV("DB_PORT", "5432"),
 	}
+	AdminKey = getENV("SECRET_KEY_ADMIN", "")
 )

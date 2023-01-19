@@ -7,7 +7,7 @@ services:
     env_file:
       - .env
     ports:
-      - 3000:3000
+      - 8080:8080
     volumes:
       - .:/app
     depends_on:
@@ -32,8 +32,25 @@ services:
     # and create tables for us.
     # everything in data folder
     # is executed as soon as container is up nd running.
-    # volumes:
-    #   - ./db/db-dump.sql:/docker-entrypoint-initdb.d/db-dump.sql
+    volumes:
+      - ./db/house_booking_db.sql:/docker-entrypoint-initdb.d/house_booking_db.sql
+
+  pgadmin:
+    container_name: pg_admin_container
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+      - PGADMIN_LISTEN_PORT = 80
+    ports:
+      - "8000:80"
+    depends_on:
+      - postgresdb
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    networks:
+      - go_api
 
   # redis:
   #   container_name: redis_container
@@ -51,3 +68,6 @@ services:
 networks:
   go_api:
     driver: bridge
+
+volumes:
+  pgadmin-data:

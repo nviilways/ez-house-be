@@ -4,6 +4,7 @@ import (
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/entity"
 	errs "git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/error"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type UserRepository interface {
@@ -40,7 +41,12 @@ func (u *userRepositoryImpl) SignUp(user *entity.User) (*entity.User, error) {
 	var wallet entity.Wallet
 
 	err := u.db.Transaction(func(tx *gorm.DB) error {
-		if affected := tx.Where("email = ?", user.Email).FirstOrCreate(&user).RowsAffected; affected == 0 {
+		err := tx.Clauses(clause.OnConflict{DoNothing: true}).Create(&user)
+		if err.Error != nil {
+			return err.Error
+		}
+
+		if err.RowsAffected == 0 {
 			return errs.ErrDuplicateEntry
 		}
 

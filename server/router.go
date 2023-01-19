@@ -18,7 +18,7 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 	
 	v1API := router.Group("/api/v1")
 	{
-		v1API.Group("register", h.UserRegister)
+		v1API.POST("/register", h.UserRegister)
 	}
 
 	return router
