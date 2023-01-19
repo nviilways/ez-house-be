@@ -63,6 +63,8 @@ func (u *userRepositoryImpl) SignUp(user *entity.User) (*entity.User, error) {
 		return nil, err
 	}
 
+	user.Wallet = wallet
+
 	return user, nil
 }
 

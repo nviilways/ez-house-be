@@ -36,5 +36,5 @@ func (h *Handler) UserRegister(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, newUser)
+	JSONResponse(c, http.StatusCreated, newUser)
 }
