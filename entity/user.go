@@ -13,7 +13,7 @@ type User struct {
 	City *City `json:"city,omitempty"`
 	RoleID uint `json:"role_id"`
 	Role *Role `json:"role,omitempty"`
-	Wallet Wallet `json:"wallet"`
+	Wallet *Wallet `json:"wallet,omitempty"`
 }
 
 func (User) TableName() string {

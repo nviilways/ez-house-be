@@ -39,6 +39,7 @@ func (u *userRepositoryImpl) SignIn(user *entity.User) (*entity.User, error) {
 
 func (u *userRepositoryImpl) SignUp(user *entity.User) (*entity.User, error) {
 	var wallet entity.Wallet
+	var games entity.Game
 
 	err := u.db.Transaction(func(tx *gorm.DB) error {
 		err := tx.Clauses(clause.OnConflict{DoNothing: true}).Create(&user)
@@ -50,20 +51,25 @@ func (u *userRepositoryImpl) SignUp(user *entity.User) (*entity.User, error) {
 			return errs.ErrDuplicateEntry
 		}
 
-		wallet.UserID = uint(user.ID)
-		if err := tx.Create(&wallet).Error; err != nil {
-			return err
+		if(user.RoleID != 1){
+			wallet.UserID = uint(user.ID)
+			if err := tx.Create(&wallet).Error; err != nil {
+				return err
+			}
+			user.Wallet = &wallet
+
+			games.UserID = uint(user.ID)
+			if err := tx.Create(&games).Error; err != nil {
+				return err
+			}
 		}
 
 		return nil
-
 	})
 
 	if err != nil {
 		return nil, err
 	}
-
-	user.Wallet = wallet
 
 	return user, nil
 }

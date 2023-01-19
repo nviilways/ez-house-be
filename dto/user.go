@@ -4,7 +4,7 @@ import "git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/hous
 
 type UserLogin struct {
 	Email string `json:"email" binding:"required"`
-	Password string `json:"-" binding:"required"`
+	Password string `json:"password" binding:"required"`
 }
 
 type UserRegister struct {
