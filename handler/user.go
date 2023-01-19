@@ -71,3 +71,25 @@ func (h *Handler) UserDetails(c *gin.Context) {
 
 	JSONResponse(c, http.StatusOK, result)
 }
+
+func (h *Handler) UserUpdate(c *gin.Context) {
+	claim, _ := c.Get("claim")
+	parsedClaim := entity.Claim(claim.(entity.Claim))
+	var reqUpdate dto.UserUpdate
+	err := c.ShouldBindJSON(&reqUpdate)
+	if(err != nil) {
+		errorTag(c, err)
+	}
+
+	newUpdate := reqUpdate.ToUser()
+	newUpdate.ID = parsedClaim.ID
+
+	result, err2 := h.userUsecase.Update(newUpdate)
+	if(err2 != nil) {
+		errorResponse(c, http.StatusInternalServerError, err2.Error())
+	}
+
+	reqUpdate.FromUser(result)
+
+	JSONResponse(c, http.StatusOK, reqUpdate)
+}

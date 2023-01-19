@@ -15,6 +15,12 @@ type UserRegister struct {
 	CityID uint `json:"city_id"`
 }
 
+type UserUpdate struct {
+	FullName string `json:"full_name,omitempty"`
+	Address string `json:"address,omitempty"`
+	CityID uint `json:"city_id,omitempty"`
+}
+
 func (u *UserLogin) ToUser() *entity.User {
 	return &entity.User{
 		Email: u.Email,
@@ -30,4 +36,18 @@ func (u *UserRegister) ToUser() *entity.User {
 		Address: u.Address,
 		CityID: u.CityID,
 	}
+}
+
+func (u *UserUpdate) ToUser() *entity.User {
+	return &entity.User{
+		FullName: u.FullName,
+		Address: u.Address,
+		CityID: u.CityID,
+	}
+}
+
+func (u *UserUpdate) FromUser(user *entity.User) {
+	u.FullName = user.FullName
+	u.Address = user.Address
+	u.CityID = user.CityID
 }
