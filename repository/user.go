@@ -76,7 +76,7 @@ func (u *userRepositoryImpl) SignUp(user *entity.User) (*entity.User, error) {
 
 func (u *userRepositoryImpl) GetUserByID(user_id uint) (*entity.User, error) {
 	var user *entity.User
-	err := u.db.Where("id = ?", user_id).Preload("Wallet").Find(&user).Error
+	err := u.db.Where("id = ?", user_id).Preload("Wallet").Preload("Role").Preload("City").Find(&user).Error
 
 	if(err != nil) {
 		return nil, err

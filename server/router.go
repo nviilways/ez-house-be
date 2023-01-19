@@ -2,6 +2,7 @@ package server
 
 import (
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/handler"
+	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/middleware"
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/usecase"
 	"github.com/gin-gonic/gin"
 )
@@ -20,6 +21,7 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 	{
 		v1API.POST("/register", h.UserRegister)
 		v1API.POST("/login", h.UserLogin)
+		v1API.GET("/me", middleware.JWTAuthorization, h.UserDetails)
 	}
 
 	return router

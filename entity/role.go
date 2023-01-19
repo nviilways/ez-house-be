@@ -6,7 +6,6 @@ type Role struct {
 	ID uint `json:"id"`
 	gorm.Model `json:"-"`
 	Name string `json:"name"`
-	UserID uint `json:"-"`
 }
 
 func (Role) TableName() string {
