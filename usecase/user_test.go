@@ -64,7 +64,7 @@ func TestSignIn(t *testing.T) {
 
 		assert.NotNil(t, result)
 	})
-	t.Run("should return error invalid credential when inserting wrong password", func(t *testing.T) {
+	t.Run("should return error invalid credential when inserting wrong password or user not exist", func(t *testing.T) {
 		pw, _ := utils.HashAndSalt("test")
 		user := &entity.User{
 			Email: "user@mail.com",

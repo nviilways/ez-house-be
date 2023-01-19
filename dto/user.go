@@ -7,9 +7,27 @@ type UserLogin struct {
 	Password string `json:"-" binding:"required"`
 }
 
+type UserRegister struct {
+	Email string `json:"email" binding:"required, email"`
+	Password string `json:"password" binding:"required"`
+	FullName string `json:"full_name"` 
+	Address string `json:"address"`
+	CityID uint `json:"city_id"`
+}
+
 func (u *UserLogin) ToUser() *entity.User {
 	return &entity.User{
 		Email: u.Email,
 		Password: u.Password,
+	}
+}
+
+func (u *UserRegister) ToUser() *entity.User {
+	return &entity.User{
+		Email: u.Email,
+		Password: u.Password,
+		FullName: u.FullName,
+		Address: u.Address,
+		CityID: u.CityID,
 	}
 }
