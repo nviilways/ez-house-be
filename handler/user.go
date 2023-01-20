@@ -95,6 +95,14 @@ func (h *Handler) UserDetails(c *gin.Context) {
 }
 
 func (h *Handler) UserUpdate(c *gin.Context) {
+	token := c.GetHeader("authorization")
+	token = strings.Replace(token, "Bearer ", "", -1)
+	tokenErr := h.userUsecase.TokenCheck(token)
+	if tokenErr != nil {
+		errorResponse(c, http.StatusUnauthorized, tokenErr.Error())
+		return
+	}
+
 	claim, _ := c.Get("claim")
 	parsedClaim := entity.Claim(claim.(entity.Claim))
 	var reqUpdate dto.UserUpdate
