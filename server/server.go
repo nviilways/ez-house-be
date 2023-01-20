@@ -25,9 +25,17 @@ func createRouter() *gin.Engine {
 		TransactionRepository: txRepo,
 	})
 
+	adminRepo := repository.NewAdminRepository(&repository.AdminRConfig{
+		DB: db,
+	})
+	adminUsecase := usecase.NewAdminUsecase(&usecase.AdminUConfig{
+		AdminRepository: adminRepo,
+	})
+
 	return NewRouter(&RouterConfig{
 		UserUsecase: userUsecase,
 		TransactionUsecase: txUsecase,
+		AdminUsecase: adminUsecase,
 	})
 }
 

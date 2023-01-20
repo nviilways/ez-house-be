@@ -6,6 +6,7 @@ import (
 
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/config"
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/entity"
+	errs "git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/error"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 )
@@ -15,7 +16,7 @@ func JWTAuthorization(c *gin.Context) {
 
 	if auth == "" {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"code" : "STATUS_UNAUTHORIZED",
+			"code" : errs.ErrorCode[http.StatusUnauthorized],
 			"message" : "unable to find user auth",
 		})
 		return
@@ -29,7 +30,7 @@ func JWTAuthorization(c *gin.Context) {
 
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"code" : "STATUS_UNAUTHORIZED",
+			"code" : errs.ErrorCode[http.StatusUnauthorized],
 			"message" : "unable to parse token",
 		})
 	}
@@ -37,7 +38,7 @@ func JWTAuthorization(c *gin.Context) {
 	claim, ok := parsedToken.Claims.(*entity.Claim)
 	if !ok {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"code" : "STATUS_UNAUTHORIZED",
+			"code" : errs.ErrorCode[http.StatusUnauthorized],
 			"message" : "invalid token",
 		})
 		return

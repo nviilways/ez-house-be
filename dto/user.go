@@ -28,6 +28,13 @@ func (u *UserLogin) ToUser() *entity.User {
 	}
 }
 
+func (u *UserLogin) ToAdmin() *entity.Admin {
+	return &entity.Admin{
+		Email: u.Email,
+		Password: u.Password,
+	}
+}
+
 func (u *UserRegister) ToUser() *entity.User {
 	return &entity.User{
 		Email: u.Email,

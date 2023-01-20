@@ -13,6 +13,7 @@ import (
 type RouterConfig struct {
 	UserUsecase usecase.UserUsecase
 	TransactionUsecase usecase.TransactionUsecase
+	AdminUsecase usecase.AdminUsecase
 }
 
 func NewRouter(cfg *RouterConfig) *gin.Engine {
@@ -20,6 +21,7 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 	h := handler.New(&handler.Config{
 		UserUsecase: cfg.UserUsecase,
 		TransactionUsecase: cfg.TransactionUsecase,
+		AdminUsecase: cfg.AdminUsecase,
 	})
 	
 	router.Use(cors.New(cors.Config{
@@ -33,6 +35,11 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 
 	v1API := router.Group("/api/v1")
 	{
+		admin := v1API.Group("/admin")
+		{
+			admin.POST("/login", h.AdminSignIn)
+			admin.POST("/register", middleware.JWTAuthorization, middleware.AuthorizeAdmin, h.AdminSignUp)
+		}
 		v1API.POST("/register", h.UserRegister)
 		v1API.POST("/login", h.UserLogin)
 		v1API.GET("/me", middleware.JWTAuthorization, h.UserDetails)
