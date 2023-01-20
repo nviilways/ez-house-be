@@ -12,12 +12,14 @@ import (
 
 type RouterConfig struct {
 	UserUsecase usecase.UserUsecase
+	TransactionUsecase usecase.TransactionUsecase
 }
 
 func NewRouter(cfg *RouterConfig) *gin.Engine {
 	router := gin.Default()
 	h := handler.New(&handler.Config{
 		UserUsecase: cfg.UserUsecase,
+		TransactionUsecase: cfg.TransactionUsecase,
 	})
 	
 	router.Use(cors.New(cors.Config{
@@ -36,6 +38,7 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 		v1API.GET("/me", middleware.JWTAuthorization, h.UserDetails)
 		v1API.PATCH("/update", middleware.JWTAuthorization, h.UserUpdate)
 		v1API.POST("/logout", middleware.JWTAuthorization, h.UserLogout)
+		v1API.POST("/topup", middleware.JWTAuthorization, h.UserTopUp)
 	}
 
 	return router
