@@ -10,9 +10,10 @@ import (
 type UserRepository interface {
 	SignIn(*entity.User) (*entity.User, error)
 	SignUp(*entity.User) (*entity.User, error)
-	SignOut(*entity.Token) error
+	SignOut(string) error
 	GetUserByID(uint) (*entity.User, error)
 	Update(*entity.User) (*entity.User, error)
+	TokenCheck(string) (error)
 }
 
 type userRepositoryImpl struct {
@@ -76,8 +77,8 @@ func (u *userRepositoryImpl) SignUp(user *entity.User) (*entity.User, error) {
 	return user, nil
 }
 
-func (u *userRepositoryImpl) SignOut(token *entity.Token) error {
-	err := u.db.Create(&token).Error
+func (u *userRepositoryImpl) SignOut(token string) error {
+	err := u.db.Create(&entity.Token{Token: token}).Error
 
 	if err != nil {
 		return err
@@ -105,4 +106,13 @@ func (u *userRepositoryImpl) Update(user *entity.User) (*entity.User, error) {
 	}
 
 	return user, nil
+}
+
+func (u *userRepositoryImpl) TokenCheck(token string) error {
+	affected := u.db.Where("token = ?", token).First(&entity.Token{}).RowsAffected
+	if affected != 0 {
+		return errs.ErrInvalidToken
+	}
+
+	return nil
 }

@@ -64,11 +64,7 @@ func (h *Handler) UserLogout(c *gin.Context) {
 	token := c.GetHeader("authorization")
 	token = strings.Replace(token, "Bearer ", "", -1)
 
-	invalidToken := &entity.Token{
-		Token: token,
-	}
-
-	err := h.userUsecase.SignOut(invalidToken)
+	err := h.userUsecase.SignOut(token)
 	if(err != nil) {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
 		return
@@ -78,6 +74,14 @@ func (h *Handler) UserLogout(c *gin.Context) {
 }
 
 func (h *Handler) UserDetails(c *gin.Context) {
+	token := c.GetHeader("authorization")
+	token = strings.Replace(token, "Bearer ", "", -1)
+	tokenErr := h.userUsecase.TokenCheck(token)
+	if tokenErr != nil {
+		errorResponse(c, http.StatusUnauthorized, tokenErr.Error())
+		return
+	}
+	
 	claim, _ := c.Get("claim")
 	parsedClaim := entity.Claim(claim.(entity.Claim))
 
