@@ -11,6 +11,7 @@ import (
 type UserUsecase interface {
 	SignIn(string, *entity.User) (*dto.Token, error)
 	SignUp(*entity.User) (*entity.User, error)
+	SignOut(*entity.Token) error
 	GetUserByID(uint) (*entity.User, error)
 	Update(*entity.User) (*entity.User, error)
 }
@@ -57,6 +58,10 @@ func (u *userUsecaseImpl) SignUp(user *entity.User) (*entity.User, error) {
 	}
 
 	return result, nil
+}
+
+func (u *userUsecaseImpl) SignOut(token *entity.Token) error {
+	return u.userRepository.SignOut(token)
 }
 
 func (u *userUsecaseImpl) GetUserByID(user_id uint) (*entity.User, error) {

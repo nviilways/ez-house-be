@@ -3,6 +3,7 @@ package handler
 import (
 	"errors"
 	"net/http"
+	"strings"
 
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/config"
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/dto"
@@ -57,6 +58,23 @@ func (h *Handler) UserLogin(c *gin.Context) {
 	}
 
 	JSONResponse(c, http.StatusOK, result)
+}
+
+func (h *Handler) UserLogout(c *gin.Context) {
+	token := c.GetHeader("authorization")
+	token = strings.Replace(token, "Bearer ", "", -1)
+
+	invalidToken := &entity.Token{
+		Token: token,
+	}
+
+	err := h.userUsecase.SignOut(invalidToken)
+	if(err != nil) {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	JSONResponse(c, http.StatusOK, nil)
 }
 
 func (h *Handler) UserDetails(c *gin.Context) {

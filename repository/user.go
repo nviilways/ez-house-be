@@ -10,6 +10,7 @@ import (
 type UserRepository interface {
 	SignIn(*entity.User) (*entity.User, error)
 	SignUp(*entity.User) (*entity.User, error)
+	SignOut(*entity.Token) error
 	GetUserByID(uint) (*entity.User, error)
 	Update(*entity.User) (*entity.User, error)
 }
@@ -73,6 +74,16 @@ func (u *userRepositoryImpl) SignUp(user *entity.User) (*entity.User, error) {
 	}
 
 	return user, nil
+}
+
+func (u *userRepositoryImpl) SignOut(token *entity.Token) error {
+	err := u.db.Create(&token).Error
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (u *userRepositoryImpl) GetUserByID(user_id uint) (*entity.User, error) {
