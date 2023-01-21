@@ -103,7 +103,7 @@ func (u *userRepositoryImpl) GetUserByID(user_id uint) (*entity.User, error) {
 }
 
 func (u *userRepositoryImpl) Update(user *entity.User) (*entity.User, error) {
-	err := u.db.Where("id = ?" , user.ID).Clauses(clause.Returning{}).Updates(user).Error
+	err := u.db.Where("id = ?" , user.ID).Clauses(clause.Returning{}).Updates(&user).Error
 
 	if err != nil {
 		return nil, err
