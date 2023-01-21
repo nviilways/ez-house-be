@@ -26,7 +26,7 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 	
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
-        AllowMethods:     []string{"POST", "GET"},
+        AllowMethods:     []string{"POST", "GET", "PATCH"},
         AllowHeaders:     []string{"*"},
         ExposeHeaders:    []string{"Content-Length"},
         AllowCredentials: true,
