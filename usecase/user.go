@@ -15,6 +15,7 @@ type UserUsecase interface {
 	GetUserByID(uint) (*entity.User, error)
 	Update(*entity.User) (*entity.User, error)
 	TokenCheck(string) error
+	UpdateRole(uint) error
 }
 
 type userUsecaseImpl struct {
@@ -81,4 +82,8 @@ func (u *userUsecaseImpl) Update(user *entity.User) (*entity.User, error) {
 
 func (u *userUsecaseImpl) TokenCheck(token string) error {
 	return u.userRepository.TokenCheck(token)
+}
+
+func (u *userUsecaseImpl) UpdateRole(id uint) error {
+	return u.userRepository.UpdateRole(id)
 }

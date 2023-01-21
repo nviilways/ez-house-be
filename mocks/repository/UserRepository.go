@@ -132,6 +132,20 @@ func (_m *UserRepository) Update(_a0 *entity.User) (*entity.User, error) {
 	return r0, r1
 }
 
+// UpdateRole provides a mock function with given fields: _a0
+func (_m *UserRepository) UpdateRole(_a0 uint) error {
+	ret := _m.Called(_a0)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(uint) error); ok {
+		r0 = rf(_a0)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 type mockConstructorTestingTNewUserRepository interface {
 	mock.TestingT
 	Cleanup(func())

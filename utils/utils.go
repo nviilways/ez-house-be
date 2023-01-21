@@ -1,11 +1,13 @@
 package utils
 
 import (
+	"strings"
 	"time"
 
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/config"
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/dto"
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/entity"
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -40,4 +42,10 @@ func GenerateAccessToken(user *entity.User) (*dto.Token, error) {
 	}
 
 	return result, nil
+}
+
+func GetToken(c *gin.Context) string {
+	token := c.GetHeader("authorization")
+	token = strings.Replace(token, "Bearer ", "", -1)
+	return token 
 }

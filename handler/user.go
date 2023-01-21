@@ -3,12 +3,12 @@ package handler
 import (
 	"errors"
 	"net/http"
-	"strings"
 
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/config"
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/dto"
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/entity"
 	errs "git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/error"
+	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -53,6 +53,10 @@ func (h *Handler) UserLogin(c *gin.Context) {
 	newLogin := reqLogin.ToUser()
 	result, err2 := h.userUsecase.SignIn(newLogin.Password, newLogin)
 	if(err2 != nil) {
+		if(errors.Is(err2, errs.ErrInvalidCredential)) {
+			errorResponse(c, http.StatusBadRequest, err2.Error())
+			return
+		}
 		errorResponse(c, http.StatusInternalServerError, err2.Error())
 		return
 	}
@@ -61,8 +65,7 @@ func (h *Handler) UserLogin(c *gin.Context) {
 }
 
 func (h *Handler) UserLogout(c *gin.Context) {
-	token := c.GetHeader("authorization")
-	token = strings.Replace(token, "Bearer ", "", -1)
+	token := utils.GetToken(c)
 
 	err := h.userUsecase.SignOut(token)
 	if(err != nil) {
@@ -74,8 +77,7 @@ func (h *Handler) UserLogout(c *gin.Context) {
 }
 
 func (h *Handler) UserDetails(c *gin.Context) {
-	token := c.GetHeader("authorization")
-	token = strings.Replace(token, "Bearer ", "", -1)
+	token := utils.GetToken(c)
 	tokenErr := h.userUsecase.TokenCheck(token)
 	if tokenErr != nil {
 		errorResponse(c, http.StatusUnauthorized, tokenErr.Error())
@@ -95,8 +97,7 @@ func (h *Handler) UserDetails(c *gin.Context) {
 }
 
 func (h *Handler) UserUpdate(c *gin.Context) {
-	token := c.GetHeader("authorization")
-	token = strings.Replace(token, "Bearer ", "", -1)
+	token := utils.GetToken(c)
 	tokenErr := h.userUsecase.TokenCheck(token)
 	if tokenErr != nil {
 		errorResponse(c, http.StatusUnauthorized, tokenErr.Error())
@@ -122,4 +123,24 @@ func (h *Handler) UserUpdate(c *gin.Context) {
 	reqUpdate.FromUser(result)
 
 	JSONResponse(c, http.StatusOK, reqUpdate)
+}
+
+func (h *Handler) UserUpdateRole(c *gin.Context) {
+	token := utils.GetToken(c)
+	tokenErr := h.userUsecase.TokenCheck(token)
+	if tokenErr != nil {
+		errorResponse(c, http.StatusUnauthorized, tokenErr.Error())
+		return
+	}
+
+	claim, _ := c.Get("claim")
+	parsedClaim := entity.Claim(claim.(entity.Claim))
+
+	err := h.userUsecase.UpdateRole(parsedClaim.ID)
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	JSONResponse(c, http.StatusOK, nil)
 }

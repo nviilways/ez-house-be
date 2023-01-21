@@ -46,6 +46,7 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 		v1API.PATCH("/update", middleware.JWTAuthorization, h.UserUpdate)
 		v1API.POST("/logout", middleware.JWTAuthorization, h.UserLogout)
 		v1API.POST("/topup", middleware.JWTAuthorization, h.UserTopUp)
+		v1API.PATCH("/update/role", middleware.JWTAuthorization, h.UserUpdateRole)
 	}
 
 	return router

@@ -14,6 +14,7 @@ type UserRepository interface {
 	GetUserByID(uint) (*entity.User, error)
 	Update(*entity.User) (*entity.User, error)
 	TokenCheck(string) (error)
+	UpdateRole(uint) (error)
 }
 
 type userRepositoryImpl struct {
@@ -34,6 +35,9 @@ func (u *userRepositoryImpl) SignIn(user *entity.User) (*entity.User, error) {
 	err := u.db.Where("email = ?", user.Email).Preload("Wallet").Find(&user).Error
 
 	if(err != nil) {
+		if err == gorm.ErrRecordNotFound {
+			return nil, errs.ErrInvalidCredential
+		}
 		return nil, err
 	}
 
@@ -112,6 +116,16 @@ func (u *userRepositoryImpl) TokenCheck(token string) error {
 	affected := u.db.Where("token = ?", token).First(&entity.Token{}).RowsAffected
 	if affected != 0 {
 		return errs.ErrInvalidToken
+	}
+
+	return nil
+}
+
+func (u *userRepositoryImpl) UpdateRole(id uint) error {
+	err := u.db.Model(&entity.User{}).Where("id = ?", id).Update("role_id", 3).Error
+
+	if(err != nil) {
+		return err
 	}
 
 	return nil
