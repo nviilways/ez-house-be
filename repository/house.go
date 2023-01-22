@@ -34,7 +34,7 @@ func NewHouseRepository(cfg *HouseRConfig) HouseRepository {
 
 func (h *houseRepositoryImpl) GetHouseByID(id uint) (*entity.House, error) {
 	var house *entity.House
-	
+
 	err := h.db.Where("id = ?", id).First(&house).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -57,7 +57,6 @@ func (h *houseRepositoryImpl) GetHouseList() ([]*entity.House, error) {
 	return house, nil
 }
 
-
 func (h *houseRepositoryImpl) GetHouseListByVacancy(in time.Time, out time.Time) ([]*entity.House, error) {
 	var house []*entity.House
 
@@ -71,7 +70,7 @@ func (h *houseRepositoryImpl) GetHouseListByVacancy(in time.Time, out time.Time)
 
 func (h *houseRepositoryImpl) GetHouseByHost(id uint) ([]*entity.House, error) {
 	var house []*entity.House
-	
+
 	err := h.db.Where("user_id = ?", id).Find(&house).Error
 	if err != nil {
 		return nil, err
@@ -98,7 +97,7 @@ func (h *houseRepositoryImpl) UpdateHouse(id uint, house *entity.House) (*entity
 	return house, nil
 }
 
-func (h *houseRepositoryImpl) DeleteHouse(id uint,house *entity.House) (*entity.House, error) {
+func (h *houseRepositoryImpl) DeleteHouse(id uint, house *entity.House) (*entity.House, error) {
 	err := h.db.Where("id = ?", id).Delete(&house).Error
 	if err != nil {
 		return nil, err
@@ -106,4 +105,3 @@ func (h *houseRepositoryImpl) DeleteHouse(id uint,house *entity.House) (*entity.
 
 	return house, nil
 }
-
