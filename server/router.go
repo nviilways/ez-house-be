@@ -14,6 +14,7 @@ type RouterConfig struct {
 	UserUsecase usecase.UserUsecase
 	TransactionUsecase usecase.TransactionUsecase
 	AdminUsecase usecase.AdminUsecase
+	HouseUsecase usecase.HouseUsecase
 }
 
 func NewRouter(cfg *RouterConfig) *gin.Engine {
@@ -22,6 +23,7 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 		UserUsecase: cfg.UserUsecase,
 		TransactionUsecase: cfg.TransactionUsecase,
 		AdminUsecase: cfg.AdminUsecase,
+		HouseUsecase: cfg.HouseUsecase,
 	})
 	
 	router.Use(cors.New(cors.Config{

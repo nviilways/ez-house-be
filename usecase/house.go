@@ -14,7 +14,7 @@ type HouseUsecase interface {
 	GetHouseByHost(uint) ([]*entity.House, error)
 	AddHouse(*entity.House) (*entity.House, error)
 	UpdateHouse(uint, *entity.House) (*entity.House, error)
-	DeleteHouse(uint, *entity.House) (*entity.House, error)
+	DeleteHouse(uint) (*entity.House, error)
 }
 
 type houseUsecaseImpl struct {
@@ -25,7 +25,7 @@ type HouseUConfig struct {
 	HouseRepository repository.HouseRepository
 }
 
-func NewHouseRepository(cfg *HouseUConfig) HouseUsecase {
+func NewHouseUsecase(cfg *HouseUConfig) HouseUsecase {
 	return &houseUsecaseImpl {
 		houseRepository: cfg.HouseRepository,
 	}
@@ -55,6 +55,6 @@ func (h *houseUsecaseImpl) UpdateHouse(id uint, house *entity.House) (*entity.Ho
 	return h.houseRepository.UpdateHouse(id, house)
 }
 
-func (h *houseUsecaseImpl) DeleteHouse(id uint, house *entity.House) (*entity.House, error) {
-	return h.houseRepository.DeleteHouse(id, house)
+func (h *houseUsecaseImpl) DeleteHouse(id uint) (*entity.House, error) {
+	return h.houseRepository.DeleteHouse(id)
 }

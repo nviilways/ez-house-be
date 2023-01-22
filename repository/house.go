@@ -6,6 +6,7 @@ import (
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/entity"
 	errs "git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/error"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type HouseRepository interface {
@@ -15,7 +16,7 @@ type HouseRepository interface {
 	GetHouseByHost(uint) ([]*entity.House, error)
 	AddHouse(*entity.House) (*entity.House, error)
 	UpdateHouse(uint, *entity.House) (*entity.House, error)
-	DeleteHouse(uint, *entity.House) (*entity.House, error)
+	DeleteHouse(uint) (*entity.House, error)
 }
 
 type houseRepositoryImpl struct {
@@ -97,8 +98,10 @@ func (h *houseRepositoryImpl) UpdateHouse(id uint, house *entity.House) (*entity
 	return house, nil
 }
 
-func (h *houseRepositoryImpl) DeleteHouse(id uint, house *entity.House) (*entity.House, error) {
-	err := h.db.Where("id = ?", id).Delete(&house).Error
+func (h *houseRepositoryImpl) DeleteHouse(id uint) (*entity.House, error) {
+	var house *entity.House
+
+	err := h.db.Where("id = ?", id).Clauses(clause.Returning{}).Delete(&house).Error
 	if err != nil {
 		return nil, err
 	}

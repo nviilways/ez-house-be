@@ -32,10 +32,18 @@ func createRouter() *gin.Engine {
 		AdminRepository: adminRepo,
 	})
 
+	houseRepo := repository.NewHouseRepository(&repository.HouseRConfig{
+		DB: db,
+	})
+	houseUsecase := usecase.NewHouseUsecase(&usecase.HouseUConfig{
+		HouseRepository: houseRepo,
+	})
+
 	return NewRouter(&RouterConfig{
 		UserUsecase: userUsecase,
 		TransactionUsecase: txUsecase,
 		AdminUsecase: adminUsecase,
+		HouseUsecase: houseUsecase,
 	})
 }
 
