@@ -15,6 +15,7 @@ type RouterConfig struct {
 	TransactionUsecase usecase.TransactionUsecase
 	AdminUsecase usecase.AdminUsecase
 	HouseUsecase usecase.HouseUsecase
+	ReservationUsecase usecase.ReservationUsecase
 }
 
 func NewRouter(cfg *RouterConfig) *gin.Engine {
@@ -24,6 +25,7 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 		TransactionUsecase: cfg.TransactionUsecase,
 		AdminUsecase: cfg.AdminUsecase,
 		HouseUsecase: cfg.HouseUsecase,
+		ReservationUsecase: cfg.ReservationUsecase,
 	})
 	
 	router.Use(cors.New(cors.Config{
@@ -45,7 +47,7 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 		house := v1API.Group("/house")
 		{
 			house.POST("/add", middleware.JWTAuthorization, middleware.AuthorizeHost, h.HostAddHouse)
-			
+
 		}
 		v1API.POST("/register", h.UserRegister)
 		v1API.POST("/login", h.UserLogin)
