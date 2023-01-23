@@ -9,6 +9,7 @@ import (
 )
 
 const superAdminRoleId = 4
+const hostRoleId = 3
 
 func AuthorizeAdmin(c *gin.Context) {
 	claim, _ := c.Get("claim")
@@ -19,5 +20,17 @@ func AuthorizeAdmin(c *gin.Context) {
 			Code: http.StatusForbidden,
 			Message: "forbidden access",
 		})
-	}	
+	}
+}
+
+func AuthorizeHost(c *gin.Context) {
+	claim, _ := c.Get("claim")
+	parsedClaim := entity.Claim(claim.(entity.Claim))
+
+	if(parsedClaim.RoleID != hostRoleId){
+		c.AbortWithStatusJSON(http.StatusForbidden, dto.JSONResponse{
+			Code: http.StatusForbidden,
+			Message: "forbidden access",
+		})
+	}
 }
