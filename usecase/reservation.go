@@ -16,3 +16,13 @@ type reservationUsecaseImpl struct {
 type ReservationUConfig struct {
 	ReservationRepository repository.ReservationRepository
 }
+
+func NewReservationUsecase(cfg *ReservationUConfig) ReservationUsecase {
+	return &reservationUsecaseImpl{
+		reservationRepository: cfg.ReservationRepository,
+	}
+}
+
+func (r *reservationUsecaseImpl) AddReservation(res *entity.Reservation) (*entity.Reservation, error) {
+	return r.reservationRepository.AddReservation(res)
+}
