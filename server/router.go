@@ -45,6 +45,7 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 		house := v1API.Group("/house")
 		{
 			house.POST("/add", middleware.JWTAuthorization, middleware.AuthorizeHost, h.HostAddHouse)
+			
 		}
 		v1API.POST("/register", h.UserRegister)
 		v1API.POST("/login", h.UserLogin)
