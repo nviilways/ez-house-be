@@ -19,5 +19,5 @@ type Reservation struct {
 }
 
 func (Reservation) TableName() string {
-	return "reservations_tab"
+	return "reservation_tab"
 }

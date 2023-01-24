@@ -9,5 +9,5 @@ type City struct {
 }
 
 func (City) TableName() string {
-	return "cities_tab"
+	return "city_tab"
 }

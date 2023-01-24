@@ -11,5 +11,5 @@ type Photo struct {
 }
 
 func (Photo) TableName() string {
-	return "houses_photos_tab"
+	return "house_photo_tab"
 }

@@ -46,8 +46,9 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 		}
 		house := v1API.Group("/house")
 		{
+			house.GET("/:id", h.UserGetHouseById)
 			house.POST("/add", middleware.JWTAuthorization, middleware.AuthorizeHost, h.HostAddHouse)
-
+			house.DELETE("/:id", middleware.JWTAuthorization, middleware.AuthorizeAdmin, middleware.AuthorizeHost, h.HostDeleteHouse)
 		}
 		v1API.POST("/register", h.UserRegister)
 		v1API.POST("/login", h.UserLogin)

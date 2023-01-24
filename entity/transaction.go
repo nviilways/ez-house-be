@@ -12,5 +12,5 @@ type Transaction struct {
  }
 
 func (Transaction) TableName() string {
-	return "transactions_tab"
+	return "transaction_tab"
 }

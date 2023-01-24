@@ -11,5 +11,5 @@ type Pickup struct {
 }
 
 func (Pickup) TableName() string {
-	return "pickups_tab"
+	return "pickup_tab"
 }

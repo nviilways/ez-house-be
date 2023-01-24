@@ -17,5 +17,5 @@ type House struct {
 }
 
 func (House) TableName() string {
-	return "houses_tab"
+	return "house_tab"
 }
