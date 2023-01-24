@@ -75,7 +75,7 @@ func (h *Handler) HostAddHouse(c *gin.Context) {
 	parsedClaim := entity.Claim(claim.(entity.Claim))
 
 	var reqNewHouse dto.NewHouse
-	err := c.ShouldBindJSON(&reqNewHouse)
+	err := c.ShouldBind(&reqNewHouse)
 	if err != nil {
 		errorTag(c, err)
 		return
@@ -83,7 +83,7 @@ func (h *Handler) HostAddHouse(c *gin.Context) {
 
 	newHouse := reqNewHouse.ToHouse()
 	newHouse.UserID = parsedClaim.ID
-	result, err2 := h.houseUsecase.AddHouse(newHouse)
+	result, err2 := h.houseUsecase.AddHouse(newHouse, reqNewHouse.Photos)
 	if err2 != nil {
 		errorResponse(c, http.StatusInternalServerError, err2.Error())
 		return
@@ -128,4 +128,8 @@ func (h *Handler) HostDeleteHouse(c *gin.Context) {
 	}
 
 	JSONResponse(c, http.StatusOK, result)
+}
+
+func (h *Handler) HostAddPhotoHouse(c *gin.Context) {
+
 }

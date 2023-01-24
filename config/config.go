@@ -34,4 +34,7 @@ var (
 		Port: getENV("DB_PORT", "5432"),
 	}
 	AdminKey = getENV("SECRET_KEY_ADMIN", "")
+	CloudinaryCloud = getENV("CLOUDINARY_CLOUD_NAME", "")
+	CloudinaryApiKey = getENV("CLOUDINARY_API_KEY", "")
+	CloudinarySecretKey = getENV("CLOUDINARY_SECRET_KEY", "")
 )

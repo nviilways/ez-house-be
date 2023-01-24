@@ -13,7 +13,7 @@ type House struct {
 	CityID int `json:"city_id"`
 	City *City `json:"city,omitempty"`
 	MaxGuest int `json:"max_guest"`
-	Photo []Photo `json:"house_photos,omitempty"`
+	Photo []*Photo `json:"house_photos,omitempty"`
 }
 
 func (House) TableName() string {

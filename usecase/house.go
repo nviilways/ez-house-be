@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"mime/multipart"
 	"time"
 
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/entity"
@@ -12,9 +13,10 @@ type HouseUsecase interface {
 	GetHouseList() ([]*entity.House, error)
 	GetHouseListByVacancy(time.Time, time.Time) ([]*entity.House, error)
 	GetHouseByHost(uint) ([]*entity.House, error)
-	AddHouse(*entity.House) (*entity.House, error)
+	AddHouse(*entity.House, []*multipart.FileHeader) (*entity.House, error)
 	UpdateHouse(uint, *entity.House) (*entity.House, error)
 	DeleteHouse(uint) (*entity.House, error)
+	AddPhotoHouse(*entity.Photo, []*multipart.FileHeader) (*entity.Photo, error)
 }
 
 type houseUsecaseImpl struct {
@@ -47,8 +49,8 @@ func (h *houseUsecaseImpl) GetHouseByHost(id uint) ([]*entity.House, error) {
 	return h.houseRepository.GetHouseByHost(id)
 }
 
-func (h *houseUsecaseImpl) AddHouse(house *entity.House) (*entity.House, error) {
-	return h.houseRepository.AddHouse(house)
+func (h *houseUsecaseImpl) AddHouse(house *entity.House, photos []*multipart.FileHeader) (*entity.House, error) {
+	return h.houseRepository.AddHouse(house, photos)
 }
 
 func (h *houseUsecaseImpl) UpdateHouse(id uint, house *entity.House) (*entity.House, error) {
@@ -57,4 +59,8 @@ func (h *houseUsecaseImpl) UpdateHouse(id uint, house *entity.House) (*entity.Ho
 
 func (h *houseUsecaseImpl) DeleteHouse(id uint) (*entity.House, error) {
 	return h.houseRepository.DeleteHouse(id)
+}
+
+func (h *houseUsecaseImpl) AddPhotoHouse(ph *entity.Photo, photos []*multipart.FileHeader) (*entity.Photo, error) {
+	return h.houseRepository.AddPhotoHouse(ph)
 }

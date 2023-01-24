@@ -1,10 +1,14 @@
 package repository
 
 import (
+	"context"
+	"mime/multipart"
 	"time"
 
+	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/cloud"
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/entity"
 	errs "git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/error"
+	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -14,9 +18,10 @@ type HouseRepository interface {
 	GetHouseList() ([]*entity.House, error)
 	GetHouseListByVacancy(time.Time, time.Time) ([]*entity.House, error)
 	GetHouseByHost(uint) ([]*entity.House, error)
-	AddHouse(*entity.House) (*entity.House, error)
+	AddHouse(*entity.House, []*multipart.FileHeader) (*entity.House, error)
 	UpdateHouse(uint, *entity.House) (*entity.House, error)
 	DeleteHouse(uint) (*entity.House, error)
+	AddPhotoHouse(*entity.Photo) (*entity.Photo, error)
 }
 
 type houseRepositoryImpl struct {
@@ -80,11 +85,47 @@ func (h *houseRepositoryImpl) GetHouseByHost(id uint) ([]*entity.House, error) {
 	return house, nil
 }
 
-func (h *houseRepositoryImpl) AddHouse(house *entity.House) (*entity.House, error) {
-	err := h.db.Create(&house).Error
+func (h *houseRepositoryImpl) AddHouse(house *entity.House, photos []*multipart.FileHeader) (*entity.House, error) {
+	var ph []*entity.Photo
+
+	err := h.db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Create(&house).Error; err != nil {
+			return err
+		}
+
+		for i := range photos {
+			file, errOpen := photos[i].Open()
+			if errOpen != nil {
+				return errOpen
+			}
+
+			resp, errCloud := cloud.Cloud.Upload.Upload(context.Background(), file, uploader.UploadParams{
+				Folder: "ez-house",
+			})
+
+			if errCloud != nil {
+				return errCloud
+			}
+
+			ph = append(ph, &entity.Photo{
+				HouseID:  house.ID,
+				PhotoUrl: resp.SecureURL,
+				PublicID: resp.PublicID,
+			})
+		}
+
+		if err := tx.Create(&ph).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
+
 	if err != nil {
 		return nil, err
 	}
+
+	house.Photo = ph
 
 	return house, nil
 }
@@ -107,4 +148,13 @@ func (h *houseRepositoryImpl) DeleteHouse(id uint) (*entity.House, error) {
 	}
 
 	return house, nil
+}
+
+func (h *houseRepositoryImpl) AddPhotoHouse(photo *entity.Photo) (*entity.Photo, error) {
+	err := h.db.Create(&photo).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return photo, nil
 }

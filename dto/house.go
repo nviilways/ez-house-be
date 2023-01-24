@@ -1,6 +1,7 @@
 package dto
 
 import (
+	"mime/multipart"
 	"time"
 
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/entity"
@@ -12,11 +13,12 @@ type FilterHouse struct {
 }
 
 type NewHouse struct {
-	Name string `json:"name" binding:"required"`
-	Price int `json:"price" binding:"required"`
-	Description string `json:"description"`
-	CityID int `json:"city_id" binding:"required"`
-	MaxGuest int `json:"max_guest"`
+	Name string `form:"name" binding:"required"`
+	Price int `form:"price" binding:"required"`
+	Description string `form:"description"`
+	CityID int `form:"city_id" binding:"required"`
+	MaxGuest int `form:"max_guest"`
+	Photos []*multipart.FileHeader `form:"photo"`
 }
 
 type UpdateHouse struct {

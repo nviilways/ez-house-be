@@ -6,6 +6,7 @@ type Photo struct {
 	ID uint `json:"id"`
 	gorm.Model `json:"-"`
 	HouseID uint `json:"house_id"`
+	PublicID string `json:"public_id"`
 	PhotoUrl string `json:"photo_url"`
 }
 
