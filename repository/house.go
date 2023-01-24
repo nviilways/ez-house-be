@@ -22,6 +22,7 @@ type HouseRepository interface {
 	UpdateHouse(uint, *entity.House) (*entity.House, error)
 	DeleteHouse(uint, uint) (*entity.House, error)
 	AddPhotoHouse(*entity.Photo) (*entity.Photo, error)
+	DeletePhotoHouse(*entity.Photo) (*entity.Photo, error)
 }
 
 type houseRepositoryImpl struct {

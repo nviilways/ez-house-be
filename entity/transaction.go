@@ -7,7 +7,7 @@ type Transaction struct {
 	gorm.Model `json:"-"`
 	WalletID uint `json:"wallet_id"`
 	TransactionTypeID uint `json:"transaction_type_id"`
-	TransactionType TransactionType `json:"transaction_type,omitempty"`
+	TransactionType *TransactionType `json:"transaction_type,omitempty"`
 	Balance int `json:"balance"`
  }
 
