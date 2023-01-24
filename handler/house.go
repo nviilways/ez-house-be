@@ -121,7 +121,10 @@ func (h *Handler) HostDeleteHouse(c *gin.Context) {
 		return
 	}
 
-	result, err := h.houseUsecase.DeleteHouse(uint(id))
+	claim, _ := c.Get("claim")
+	parsedClaim := entity.Claim(claim.(entity.Claim))
+
+	result, err := h.houseUsecase.DeleteHouse(uint(id), uint(parsedClaim.ID))
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
 		return

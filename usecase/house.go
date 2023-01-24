@@ -15,7 +15,7 @@ type HouseUsecase interface {
 	GetHouseByHost(uint) ([]*entity.House, error)
 	AddHouse(*entity.House, []*multipart.FileHeader) (*entity.House, error)
 	UpdateHouse(uint, *entity.House) (*entity.House, error)
-	DeleteHouse(uint) (*entity.House, error)
+	DeleteHouse(uint, uint) (*entity.House, error)
 	AddPhotoHouse(*entity.Photo, []*multipart.FileHeader) (*entity.Photo, error)
 }
 
@@ -57,8 +57,8 @@ func (h *houseUsecaseImpl) UpdateHouse(id uint, house *entity.House) (*entity.Ho
 	return h.houseRepository.UpdateHouse(id, house)
 }
 
-func (h *houseUsecaseImpl) DeleteHouse(id uint) (*entity.House, error) {
-	return h.houseRepository.DeleteHouse(id)
+func (h *houseUsecaseImpl) DeleteHouse(id uint, user_id uint) (*entity.House, error) {
+	return h.houseRepository.DeleteHouse(id, user_id)
 }
 
 func (h *houseUsecaseImpl) AddPhotoHouse(ph *entity.Photo, photos []*multipart.FileHeader) (*entity.Photo, error) {

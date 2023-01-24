@@ -20,7 +20,7 @@ type HouseRepository interface {
 	GetHouseByHost(uint) ([]*entity.House, error)
 	AddHouse(*entity.House, []*multipart.FileHeader) (*entity.House, error)
 	UpdateHouse(uint, *entity.House) (*entity.House, error)
-	DeleteHouse(uint) (*entity.House, error)
+	DeleteHouse(uint, uint) (*entity.House, error)
 	AddPhotoHouse(*entity.Photo) (*entity.Photo, error)
 }
 
@@ -41,7 +41,7 @@ func NewHouseRepository(cfg *HouseRConfig) HouseRepository {
 func (h *houseRepositoryImpl) GetHouseByID(id uint) (*entity.House, error) {
 	var house *entity.House
 
-	err := h.db.Where("id = ?", id).First(&house).Error
+	err := h.db.Preload("Photo").Where("id = ?", id).First(&house).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, errs.ErrRecordNotFound
@@ -139,10 +139,31 @@ func (h *houseRepositoryImpl) UpdateHouse(id uint, house *entity.House) (*entity
 	return house, nil
 }
 
-func (h *houseRepositoryImpl) DeleteHouse(id uint) (*entity.House, error) {
+func (h *houseRepositoryImpl) ValidateHouseOwner(id uint, user_id uint) (bool) {
+	affected := h.db.Where("id = ? AND user_id = ?", id, user_id).First(&entity.House{}).RowsAffected
+	return affected == 1
+}
+
+func (h *houseRepositoryImpl) DeleteHouse(id uint, user_id uint) (*entity.House, error) {
+	isValid := h.ValidateHouseOwner(id, user_id)
+	if !isValid {
+		return nil, errs.ErrRecordNotFound
+	}
+
 	var house *entity.House
 
-	err := h.db.Where("id = ?", id).Clauses(clause.Returning{}).Delete(&house).Error
+	err := h.db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Where("house_id = ?", id).Delete(&entity.Photo{}).Error; err != nil {
+			return err
+		}
+
+		if err := tx.Clauses(clause.Returning{}).Where("id = ?", id).Delete(&house).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
+
 	if err != nil {
 		return nil, err
 	}
@@ -152,6 +173,15 @@ func (h *houseRepositoryImpl) DeleteHouse(id uint) (*entity.House, error) {
 
 func (h *houseRepositoryImpl) AddPhotoHouse(photo *entity.Photo) (*entity.Photo, error) {
 	err := h.db.Create(&photo).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return photo, nil
+}
+
+func (h *houseRepositoryImpl) DeletePhotoHouse(photo *entity.Photo) (*entity.Photo, error) {
+	err := h.db.Clauses(clause.Returning{}).Delete(&photo).Error
 	if err != nil {
 		return nil, err
 	}

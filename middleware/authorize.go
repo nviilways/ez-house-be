@@ -34,3 +34,15 @@ func AuthorizeHost(c *gin.Context) {
 		})
 	}
 }
+
+func AuthorizeAdminOrHost(c *gin.Context) {
+	claim, _ := c.Get("claim")
+	parsedClaim := entity.Claim(claim.(entity.Claim))
+
+	if(parsedClaim.RoleID != hostRoleId && parsedClaim.RoleID != superAdminRoleId) {
+		c.AbortWithStatusJSON(http.StatusForbidden, dto.JSONResponse{
+			Code: http.StatusForbidden,
+			Message: "forbidden access",
+		})
+	}
+}
