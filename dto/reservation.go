@@ -8,16 +8,18 @@ import (
 
 type NewReservation struct {
 	HouseId      uint      `json:"house_id" binding:"required"`
-	CheckInDate  time.Time `json:"check_in_date" binding:"required"`
-	CheckOutDate time.Time `json:"check_out_date" binding:"required"`
+	CheckInDate  string `json:"check_in_date" binding:"required"`
+	CheckOutDate string `json:"check_out_date" binding:"required"`
 	TotalPrice   int       `json:"total_price"`
 }
 
 func (n NewReservation) ToReservation() *entity.Reservation {
+	checkIn, _ := time.Parse("2006-01-02", n.CheckInDate)
+	checkOut, _ := time.Parse("2006-01-02", n.CheckOutDate)
 	return &entity.Reservation{
 		HouseId:      n.HouseId,
-		CheckInDate:  n.CheckInDate,
-		CheckOutDate: n.CheckOutDate,
+		CheckInDate:  checkIn,
+		CheckOutDate: checkOut,
 		TotalPrice:   n.TotalPrice,
 	}
 }

@@ -38,11 +38,11 @@ func (r *reservationRepositoryImpl) ValidateReservation(checkIn time.Time, check
 		return errs.ErrInvalidCheckDate
 	}
 
-	if checkOut.Sub(checkIn).Hours() / hourPerDay < 0 {
+	if checkOut.Sub(checkIn).Hours() / hourPerDay < 1 {
 		return errs.ErrBookForZeroDays
 	}
 
-	err := r.db.Where("check_out_date > ?", checkIn).Or("check_in_date > ?", checkOut).Or("check_in_date >= ? AND check_out_date >= ?", checkIn, checkOut).Or("check_in_date <= ? AND check_out_date <= ?", checkIn, checkOut).First(&entity.Reservation{}).Error
+	err := r.db.Where("check_in_date <= ? AND check_out_date > ?", checkOut, checkIn).First(&entity.Reservation{}).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil
