@@ -5,6 +5,7 @@ import (
 	"math"
 	"time"
 
+	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/dto"
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/entity"
 	errs "git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/error"
 	"gorm.io/gorm"
@@ -17,6 +18,8 @@ const commissionPay = 0.8
 
 type ReservationRepository interface {
 	AddReservation(*entity.Reservation) (*entity.Reservation, error)
+	GetPickupPrice(*entity.Reservation) (*dto.PickupPrice, error)
+	RequestPickup(*entity.Pickup) (*entity.Pickup, error)
 }
 
 type reservationRepositoryImpl struct {
@@ -167,3 +170,7 @@ func (r *reservationRepositoryImpl) AddReservation(res *entity.Reservation) (*en
 
 	return res, nil
 }
+
+func (r *reservationRepositoryImpl) GetPickupPrice(res *entity.Reservation) (*dto.PickupPrice, error)
+
+func (r *reservationRepositoryImpl) RequestPickup(pick *entity.Pickup) (*entity.Pickup, error)

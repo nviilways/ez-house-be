@@ -13,6 +13,10 @@ type NewReservation struct {
 	TotalPrice   int       `json:"total_price"`
 }
 
+type PickupPrice struct {
+	Price int `json:"price"`
+}
+
 func (n NewReservation) ToReservation() *entity.Reservation {
 	checkIn, _ := time.Parse("2006-01-02", n.CheckInDate)
 	checkOut, _ := time.Parse("2006-01-02", n.CheckOutDate)
