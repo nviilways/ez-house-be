@@ -11,6 +11,7 @@ type PickupUsecase interface {
 	GetPickupList() ([]*entity.Pickup, error)
 	GetPickupPrice(*entity.Reservation) (*dto.PickupPrice, error)
 	RequestPickup(*entity.Pickup) (*entity.Pickup, error)
+	UpdateStatus(uint) (*entity.Pickup, error)
 }
 
 type pickupUsecaseImpl struct {
@@ -43,3 +44,6 @@ func (p *pickupUsecaseImpl) RequestPickup(pickup *entity.Pickup) (*entity.Pickup
 	return p.pickupRepository.RequestPickup(pickup)
 }
 
+func (p *pickupUsecaseImpl) UpdateStatus(id uint) (*entity.Pickup, error) {
+	return p.pickupRepository.UpdateStatus(id)
+}

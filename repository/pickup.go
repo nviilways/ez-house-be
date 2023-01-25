@@ -7,11 +7,14 @@ import (
 	"gorm.io/gorm"
 )
 
+const updateStatus = 1
+
 type PickupRepository interface {
 	GetPickupById(uint) (*entity.Pickup, error)
 	GetPickupList() ([]*entity.Pickup, error)
 	GetPickupPrice(*entity.Reservation) (*dto.PickupPrice, error)
 	RequestPickup(*entity.Pickup) (*entity.Pickup, error)
+	UpdateStatus(uint) (*entity.Pickup, error)
 }
 
 type pickupRepositoryImpl struct {
@@ -86,4 +89,23 @@ func (r *pickupRepositoryImpl) RequestPickup(pick *entity.Pickup) (*entity.Picku
 	}
 
 	return pick, nil
+}
+
+func (r *pickupRepositoryImpl) UpdateStatus(id uint) (*entity.Pickup, error) {
+	var pickup *entity.Pickup
+
+	err := r.db.Where("id = ?", id).First(&pickup).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, errs.ErrRecordNotFound
+		}
+		return nil, err
+	}
+
+	err = r.db.Model(&pickup).Update("status_pickup_id", gorm.Expr("status_pickup_id + ?", updateStatus)).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return pickup, nil
 }
