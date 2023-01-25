@@ -5,7 +5,6 @@ import (
 	"math"
 	"time"
 
-	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/dto"
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/entity"
 	errs "git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/error"
 	"gorm.io/gorm"
@@ -18,9 +17,8 @@ const commissionPay = 0.8
 const pickupCostRate = 100000
 
 type ReservationRepository interface {
+	// GetReservation(*entity.Reservation) (*entity.Reservation, error)
 	AddReservation(*entity.Reservation) (*entity.Reservation, error)
-	GetPickupPrice(*entity.Reservation) (*dto.PickupPrice, error)
-	RequestPickup(*entity.Pickup) (*entity.Pickup, error)
 }
 
 type reservationRepositoryImpl struct {
@@ -38,11 +36,11 @@ func NewReservationRepository(cfg *ReservationRConfig) ReservationRepository {
 }
 
 func (r *reservationRepositoryImpl) ValidateReservation(checkIn time.Time, checkOut time.Time, house_id uint) error {
-	if(checkIn.Before(time.Now())) {
+	if checkIn.Before(time.Now()) {
 		return errs.ErrInvalidCheckDate
 	}
 
-	if checkOut.Sub(checkIn).Hours() / hourPerDay < 1 {
+	if checkOut.Sub(checkIn).Hours()/hourPerDay < 1 {
 		return errs.ErrBookForZeroDays
 	}
 
@@ -78,7 +76,7 @@ func (r *reservationRepositoryImpl) ValidateUserBalance(user_id uint, price int)
 		return nil, err
 	}
 
-	if(wallet.Balance >= price) {
+	if wallet.Balance >= price {
 		return &wallet, nil
 	}
 
@@ -111,7 +109,7 @@ func (r *reservationRepositoryImpl) AddReservation(res *entity.Reservation) (*en
 	if house.UserID == res.UserId {
 		return nil, errs.ErrReserveOwnHouse
 	}
-	
+
 	totalNight := res.CheckOutDate.Sub(res.CheckInDate).Hours() / hourPerDay
 	totalPrice := house.Price * int(totalNight)
 
@@ -133,9 +131,9 @@ func (r *reservationRepositoryImpl) AddReservation(res *entity.Reservation) (*en
 		}
 
 		transaction := &entity.Transaction{
-			WalletID: wallet.ID,
+			WalletID:          wallet.ID,
 			TransactionTypeID: debitType,
-			Balance: totalPrice,
+			Balance:           totalPrice,
 		}
 
 		if err := tx.Create(&transaction).Error; err != nil {
@@ -149,9 +147,9 @@ func (r *reservationRepositoryImpl) AddReservation(res *entity.Reservation) (*en
 		floatPrice := float64(totalPrice)
 
 		commission := &entity.Transaction{
-			WalletID: hostWallet.ID,
+			WalletID:          hostWallet.ID,
 			TransactionTypeID: commissionType,
-			Balance: int(math.Round(floatPrice * commissionPay)),
+			Balance:           int(math.Round(floatPrice * commissionPay)),
 		}
 
 		if err := tx.Create(&commission).Error; err != nil {
@@ -170,35 +168,4 @@ func (r *reservationRepositoryImpl) AddReservation(res *entity.Reservation) (*en
 	}
 
 	return res, nil
-}
-
-func (r *reservationRepositoryImpl) GetPickupPrice(res *entity.Reservation) (*dto.PickupPrice, error) {
-	err := r.db.Where("id = ?", res.ID).Preload("House").Preload("User").First(&res).Error
-	if err != nil {
-		return nil, errs.ErrRecordNotFound
-	}
-
-	var price *dto.PickupPrice
-	price.Price = pickupCostRate
-	if res.User.CityID != res.House.CityID {
-		price.Price *= 3
-	}
-
-	return price, nil
-}
-
-func (r *reservationRepositoryImpl) RequestPickup(pick *entity.Pickup) (*entity.Pickup, error) {
-	pick.PickupStatusID = 1
-
-	errExist := r.db.Where("user_id = ? AND reservation_id = ?", pick.UserID, pick.ReservationID).First(&entity.Pickup{}).Error
-	if errExist != nil {
-		return nil, errs.ErrDoublePickup
-	}
-
-	err := r.db.Create(&pick).Error
-	if err != nil {
-		return nil, err
-	}
-
-	return pick, nil
 }
