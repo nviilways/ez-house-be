@@ -14,4 +14,5 @@ var (
 	ErrAlreadyReserved = errors.New("house already reserved")
 	ErrHouseNotFound = errors.New("house not found")
 	ErrReserveOwnHouse = errors.New("cannot reserve owned house")
+	ErrDoublePickup = errors.New("cannot request two pickup for the same reservation")
 )

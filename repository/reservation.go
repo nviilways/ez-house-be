@@ -15,6 +15,7 @@ const hourPerDay = 24
 const debitType = 2
 const commissionType = 4
 const commissionPay = 0.8
+const pickupCostRate = 100000
 
 type ReservationRepository interface {
 	AddReservation(*entity.Reservation) (*entity.Reservation, error)
@@ -171,6 +172,33 @@ func (r *reservationRepositoryImpl) AddReservation(res *entity.Reservation) (*en
 	return res, nil
 }
 
-func (r *reservationRepositoryImpl) GetPickupPrice(res *entity.Reservation) (*dto.PickupPrice, error)
+func (r *reservationRepositoryImpl) GetPickupPrice(res *entity.Reservation) (*dto.PickupPrice, error) {
+	err := r.db.Where("id = ?", res.ID).Preload("House").Preload("User").First(&res).Error
+	if err != nil {
+		return nil, errs.ErrRecordNotFound
+	}
 
-func (r *reservationRepositoryImpl) RequestPickup(pick *entity.Pickup) (*entity.Pickup, error)
+	var price *dto.PickupPrice
+	price.Price = pickupCostRate
+	if res.User.CityID != res.House.CityID {
+		price.Price *= 3
+	}
+
+	return price, nil
+}
+
+func (r *reservationRepositoryImpl) RequestPickup(pick *entity.Pickup) (*entity.Pickup, error) {
+	pick.PickupStatusID = 1
+
+	errExist := r.db.Where("user_id = ? AND reservation_id = ?", pick.UserID, pick.ReservationID).First(&entity.Pickup{}).Error
+	if errExist != nil {
+		return nil, errs.ErrDoublePickup
+	}
+
+	err := r.db.Create(&pick).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return pick, nil
+}

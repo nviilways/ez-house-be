@@ -20,7 +20,7 @@ type NewHouse struct {
 	Name string `form:"name" binding:"required"`
 	Price int `form:"price" binding:"required"`
 	Description string `form:"description"`
-	CityID int `form:"city_id" binding:"required"`
+	CityID uint `form:"city_id" binding:"required"`
 	MaxGuest int `form:"max_guest"`
 	Photos []*multipart.FileHeader `form:"photo"`
 }
@@ -29,7 +29,7 @@ type UpdateHouse struct {
 	Name string `json:"name"`
 	Price int `json:"price"`
 	Description string `json:"description"`
-	CityID int `json:"city_id"`
+	CityID uint `json:"city_id"`
 	MaxGuest int `json:"max_guest"`
 }
 

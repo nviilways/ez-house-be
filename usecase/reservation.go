@@ -30,6 +30,10 @@ func (r *reservationUsecaseImpl) AddReservation(res *entity.Reservation) (*entit
 	return r.reservationRepository.AddReservation(res)
 }
 
-func (r *reservationUsecaseImpl) GetPickupPrice(res *entity.Reservation) (*dto.PickupPrice, error)
+func (r *reservationUsecaseImpl) GetPickupPrice(res *entity.Reservation) (*dto.PickupPrice, error) {
+	return r.reservationRepository.GetPickupPrice(res)
+}
 
-func (r *reservationUsecaseImpl) RequestPickup(pick *entity.Pickup) (*entity.Pickup, error)
+func (r *reservationUsecaseImpl) RequestPickup(pick *entity.Pickup) (*entity.Pickup, error) {
+	return r.reservationRepository.RequestPickup(pick)
+}

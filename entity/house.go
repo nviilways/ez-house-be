@@ -10,7 +10,7 @@ type House struct {
 	User *User `json:"user,omitempty"`
 	Price int `json:"price"`
 	Description string `json:"description"`
-	CityID int `json:"city_id"`
+	CityID uint `json:"city_id"`
 	City *City `json:"city,omitempty"`
 	MaxGuest int `json:"max_guest"`
 	Photo []*Photo `json:"house_photos,omitempty"`
