@@ -44,15 +44,21 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 			admin.POST("/login", h.AdminSignIn)
 			admin.POST("/register", middleware.JWTAuthorization, middleware.AuthorizeAdmin, h.AdminSignUp)
 		}
-		house := v1API.Group("/house")
+		house := v1API.Group("/houses")
 		{
+			house.GET("", h.UserGetHouseList)
 			house.GET("/:id", h.UserGetHouseById)
-			house.POST("/add", middleware.JWTAuthorization, middleware.AuthorizeHost, h.HostAddHouse)
+			house.POST("", middleware.JWTAuthorization, middleware.AuthorizeHost, h.HostAddHouse)
 			house.DELETE("/:id", middleware.JWTAuthorization, middleware.AuthorizeAdminOrHost, h.HostDeleteHouse)
+			house.PATCH("/:id", middleware.JWTAuthorization, middleware.AuthorizeHost, h.HostUpdateHouse)
+			house.GET("/vacant", h.UserGetHouseByVacancy)
+			house.GET("/host", middleware.JWTAuthorization, middleware.AuthorizeHost, h.UserGetHouseByHost)
+			house.POST("/:id/photos", middleware.JWTAuthorization, middleware.AuthorizeHost, h.HostAddPhotoHouse)
+			// house.POST("/:id/photo/:id", middleware.JWTAuthorization, middleware.AuthorizeHost, h.HostDeletePhotoHouse)
 		}
 		reservation := v1API.Group("/reservations")
 		{
-			reservation.POST("/create", middleware.JWTAuthorization, h.UseAddReservation)
+			reservation.POST("", middleware.JWTAuthorization, h.UseAddReservation)
 		}
 		v1API.POST("/register", h.UserRegister)
 		v1API.POST("/login", h.UserLogin)

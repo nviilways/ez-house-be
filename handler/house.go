@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 	"strconv"
+	"time"
 
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/dto"
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/entity"
@@ -41,14 +42,41 @@ func (h *Handler) UserGetHouseList(c *gin.Context) {
 }
 
 func (h *Handler) UserGetHouseByVacancy(c *gin.Context) {
-	var reqFilter dto.FilterHouse
-	err := c.ShouldBindJSON(&reqFilter)
-	if err != nil {
-		errorTag(c, err)
-		return
+	var inDate time.Time
+	checkIn := c.Query("checkin")
+	if checkIn != "" {
+		inDate, _ = time.Parse("2006-01-02", checkIn)
 	}
 
-	result, err2 := h.houseUsecase.GetHouseListByVacancy(reqFilter.CheckInDate, reqFilter.CheckOutDate)
+	var outDate time.Time
+	checkOut := c.Query("checkout")
+	if checkOut != "" {
+		outDate, _ = time.Parse("2006-01-02", checkOut)
+	}
+
+	sortColumn := c.Query("sort")
+	if sortColumn == "" {
+		sortColumn = "name"
+	}
+
+	sortBy := c.Query("sortby")
+	if sortBy == "" {
+		sortBy = "asc"
+	}
+
+	searchName := c.Query("searchname")
+	searchCity := c.Query("searchcity")
+
+	reqFilter := &dto.FilterHouse{
+		CheckInDate:  inDate,
+		CheckOutDate: outDate,
+		SortColumn:   sortColumn,
+		SortBy:       sortBy,
+		SearchName:   searchName,
+		SearchCity:   searchCity,
+	}
+
+	result, err2 := h.houseUsecase.GetHouseListByVacancy(reqFilter)
 	if err2 != nil {
 		errorResponse(c, http.StatusInternalServerError, err2.Error())
 		return
@@ -96,15 +124,21 @@ func (h *Handler) HostUpdateHouse(c *gin.Context) {
 	claim, _ := c.Get("claim")
 	parsedClaim := entity.Claim(claim.(entity.Claim))
 
+	id, errParse := strconv.Atoi(c.Param("id"))
+	if errParse != nil {
+		errorResponse(c, http.StatusBadRequest, errParse.Error())
+	}
+
 	var reqUpdateHouse dto.UpdateHouse
 	err := c.ShouldBindJSON(&reqUpdateHouse)
 	if err != nil {
 		errorTag(c, err)
 		return
 	}
-	
+
 	updateHouse := reqUpdateHouse.ToHouse()
 	updateHouse.UserID = parsedClaim.ID
+	updateHouse.ID = uint(id)
 	result, err2 := h.houseUsecase.UpdateHouse(parsedClaim.ID, updateHouse)
 	if err2 != nil {
 		errorResponse(c, http.StatusInternalServerError, err2.Error())

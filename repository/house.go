@@ -2,10 +2,11 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"mime/multipart"
-	"time"
 
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/cloud"
+	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/dto"
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/entity"
 	errs "git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/error"
 	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
@@ -16,7 +17,7 @@ import (
 type HouseRepository interface {
 	GetHouseByID(uint) (*entity.House, error)
 	GetHouseList() ([]*entity.House, error)
-	GetHouseListByVacancy(time.Time, time.Time) ([]*entity.House, error)
+	GetHouseListByVacancy(*dto.FilterHouse) ([]*entity.House, error)
 	GetHouseByHost(uint) ([]*entity.House, error)
 	AddHouse(*entity.House, []*multipart.FileHeader) (*entity.House, error)
 	UpdateHouse(uint, *entity.House) (*entity.House, error)
@@ -64,10 +65,15 @@ func (h *houseRepositoryImpl) GetHouseList() ([]*entity.House, error) {
 	return house, nil
 }
 
-func (h *houseRepositoryImpl) GetHouseListByVacancy(in time.Time, out time.Time) ([]*entity.House, error) {
+func (h *houseRepositoryImpl) GetHouseListByVacancy(filter *dto.FilterHouse) ([]*entity.House, error) {
 	var house []*entity.House
+	var columnKey = map[string]string {
+		"name": "house_tab.name",
+		"price": "house_tab.price",
+		"city": "city_tab.name",
+	}
 
-	err := h.db.Model(&entity.House{}).Joins("reservations_tab", h.db.Not("check_in_date >= ? AND check_out_date <= ?", in, out)).Find(&house).Error
+	err := h.db.Model(&entity.House{}).Joins("LEFT JOIN city_tab ON city_tab.id = house_tab.city_id").Joins("LEFT JOIN reservation_tab ON reservation_tab.house_id = house_tab.id AND reservation_tab.check_in_date <= ? AND reservation_tab.check_out_date > ?", filter.CheckOutDate, filter.CheckInDate).Where("reservation_tab.id IS NULL").Where("house_tab.name ILIKE ?", fmt.Sprintf("%%%s%%", filter.SearchName)).Where("city_tab.name ILIKE ?", fmt.Sprintf("%%%s%%", filter.SearchCity)).Order(fmt.Sprintf("%s %s", columnKey[filter.SortColumn], filter.SortBy)).Find(&house).Error
 	if err != nil {
 		return nil, err
 	}
@@ -140,7 +146,7 @@ func (h *houseRepositoryImpl) UpdateHouse(id uint, house *entity.House) (*entity
 	return house, nil
 }
 
-func (h *houseRepositoryImpl) ValidateHouseOwner(id uint, user_id uint) (bool) {
+func (h *houseRepositoryImpl) ValidateHouseOwner(id uint, user_id uint) bool {
 	affected := h.db.Where("id = ? AND user_id = ?", id, user_id).First(&entity.House{}).RowsAffected
 	return affected == 1
 }

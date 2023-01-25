@@ -8,8 +8,12 @@ import (
 )
 
 type FilterHouse struct {
-	CheckInDate  time.Time `json:"check_in"`
-	CheckOutDate time.Time `json:"check_out"`
+	CheckInDate  time.Time
+	CheckOutDate time.Time
+	SortColumn string
+	SortBy string
+	SearchName string
+	SearchCity string
 }
 
 type NewHouse struct {

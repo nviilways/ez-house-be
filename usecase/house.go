@@ -2,8 +2,8 @@ package usecase
 
 import (
 	"mime/multipart"
-	"time"
 
+	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/dto"
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/entity"
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/repository"
 )
@@ -11,7 +11,7 @@ import (
 type HouseUsecase interface {
 	GetHouseByID(uint) (*entity.House, error)
 	GetHouseList() ([]*entity.House, error)
-	GetHouseListByVacancy(time.Time, time.Time) ([]*entity.House, error)
+	GetHouseListByVacancy(*dto.FilterHouse) ([]*entity.House, error)
 	GetHouseByHost(uint) ([]*entity.House, error)
 	AddHouse(*entity.House, []*multipart.FileHeader) (*entity.House, error)
 	UpdateHouse(uint, *entity.House) (*entity.House, error)
@@ -28,7 +28,7 @@ type HouseUConfig struct {
 }
 
 func NewHouseUsecase(cfg *HouseUConfig) HouseUsecase {
-	return &houseUsecaseImpl {
+	return &houseUsecaseImpl{
 		houseRepository: cfg.HouseRepository,
 	}
 }
@@ -41,8 +41,8 @@ func (h *houseUsecaseImpl) GetHouseList() ([]*entity.House, error) {
 	return h.houseRepository.GetHouseList()
 }
 
-func (h *houseUsecaseImpl) GetHouseListByVacancy(in time.Time, out time.Time) ([]*entity.House, error) {
-	return h.houseRepository.GetHouseListByVacancy(in, out)
+func (h *houseUsecaseImpl) GetHouseListByVacancy(filter *dto.FilterHouse) ([]*entity.House, error) {
+	return h.houseRepository.GetHouseListByVacancy(filter)
 }
 
 func (h *houseUsecaseImpl) GetHouseByHost(id uint) ([]*entity.House, error) {
