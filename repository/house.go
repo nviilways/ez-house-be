@@ -160,11 +160,11 @@ func (h *houseRepositoryImpl) ValidateHouseNoReservation(id uint) bool {
 func (h *houseRepositoryImpl) DeleteHouse(id uint, user_id uint) (*entity.House, error) {
 	isValid := h.ValidateHouseOwner(id, user_id)
 	if !isValid {
-		return nil, errs.ErrRecordNotFound
+		return nil, errs.ErrNotHouseOwner
 	}
 
-	isDone := h.ValidateHouseNoReservation(id)
-	if !isDone {
+	isReserved := h.ValidateHouseNoReservation(id)
+	if isReserved {
 		return nil, errs.ErrHouseStillReserved
 	}
 

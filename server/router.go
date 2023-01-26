@@ -42,7 +42,7 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 		admin := v1API.Group("/admin")
 		{
 			admin.POST("/login", h.AdminSignIn)
-			admin.POST("/register", middleware.JWTAuthorization, middleware.AuthorizeAdmin, h.AdminSignUp)
+			admin.POST("/register", middleware.JWTAuthorization, middleware.AuthorizeSuperAdmin, h.AdminSignUp)
 		}
 		house := v1API.Group("/houses")
 		{

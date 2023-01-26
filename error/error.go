@@ -17,4 +17,5 @@ var (
 	ErrDoublePickup = errors.New("cannot request two pickup for the same reservation")
 	ErrCompletedPickup = errors.New("this pickup is already completed")
 	ErrHouseStillReserved = errors.New("cannot delete house while still reserved")
+	ErrNotHouseOwner = errors.New("access forbidden")
 )
