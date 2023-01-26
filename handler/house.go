@@ -130,7 +130,7 @@ func (h *Handler) HostUpdateHouse(c *gin.Context) {
 	}
 
 	var reqUpdateHouse dto.UpdateHouse
-	err := c.ShouldBindJSON(&reqUpdateHouse)
+	err := c.ShouldBind(&reqUpdateHouse)
 	if err != nil {
 		errorTag(c, err)
 		return

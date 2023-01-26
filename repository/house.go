@@ -139,7 +139,12 @@ func (h *houseRepositoryImpl) AddHouse(house *entity.House, photos []*multipart.
 }
 
 func (h *houseRepositoryImpl) UpdateHouse(id uint, house *entity.House) (*entity.House, error) {
-	err := h.db.Where("id = ?", id).Updates(&house).Error
+	isValid := h.ValidateHouseOwner(house.ID, id)
+	if !isValid {
+		return nil, errs.ErrNotHouseOwner
+	}
+	
+	err := h.db.Updates(&house).Error
 	if err != nil {
 		return nil, err
 	}
