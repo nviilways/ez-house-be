@@ -44,7 +44,7 @@ func (r *reservationRepositoryImpl) ValidateReservation(checkIn time.Time, check
 		return errs.ErrBookForZeroDays
 	}
 
-	err := r.db.Where("check_in_date <= ? AND check_out_date > ?", checkOut, checkIn).First(&entity.Reservation{}).Error
+	err := r.db.Where("house_id = ? AND check_in_date <= ? AND check_out_date > ?", house_id,checkOut, checkIn).First(&entity.Reservation{}).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil
