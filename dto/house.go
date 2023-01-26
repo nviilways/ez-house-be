@@ -26,11 +26,11 @@ type NewHouse struct {
 }
 
 type UpdateHouse struct {
-	Name string `json:"name"`
-	Price int `json:"price"`
-	Description string `json:"description"`
-	CityID uint `json:"city_id"`
-	MaxGuest int `json:"max_guest"`
+	Name string `form:"name"`
+	Price int `form:"price"`
+	Description string `form:"description"`
+	CityID uint `form:"city_id"`
+	MaxGuest int `form:"max_guest"`
 }
 
 func (n *NewHouse) ToHouse() *entity.House {

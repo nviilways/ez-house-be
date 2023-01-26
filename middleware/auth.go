@@ -33,6 +33,7 @@ func JWTAuthorization(c *gin.Context) {
 			"code" : errs.ErrorCode[http.StatusUnauthorized],
 			"message" : "unable to parse token",
 		})
+		return
 	}
 
 	claim, ok := parsedToken.Claims.(*entity.Claim)

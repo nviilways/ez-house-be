@@ -102,6 +102,10 @@ func (r *pickupRepositoryImpl) UpdateStatus(id uint) (*entity.Pickup, error) {
 		return nil, err
 	}
 
+	if(pickup.PickupStatusID == 5) {
+		return nil, errs.ErrCompletedPickup
+	}
+
 	err = r.db.Model(&pickup).Update("status_pickup_id", gorm.Expr("status_pickup_id + ?", updateStatus)).Error
 	if err != nil {
 		return nil, err

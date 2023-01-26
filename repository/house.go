@@ -43,7 +43,7 @@ func NewHouseRepository(cfg *HouseRConfig) HouseRepository {
 func (h *houseRepositoryImpl) GetHouseByID(id uint) (*entity.House, error) {
 	var house *entity.House
 
-	err := h.db.Preload("Photo").Where("id = ?", id).First(&house).Error
+	err := h.db.Preload("Photo").Preload("City").Where("id = ?", id).First(&house).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, errs.ErrRecordNotFound
@@ -73,7 +73,7 @@ func (h *houseRepositoryImpl) GetHouseListByVacancy(filter *dto.FilterHouse) ([]
 		"city": "city_tab.name",
 	}
 
-	err := h.db.Model(&entity.House{}).Joins("LEFT JOIN city_tab ON city_tab.id = house_tab.city_id").Joins("LEFT JOIN reservation_tab ON reservation_tab.house_id = house_tab.id AND reservation_tab.check_in_date <= ? AND reservation_tab.check_out_date > ?", filter.CheckOutDate, filter.CheckInDate).Where("reservation_tab.id IS NULL").Where("house_tab.name ILIKE ?", fmt.Sprintf("%%%s%%", filter.SearchName)).Where("city_tab.name ILIKE ?", fmt.Sprintf("%%%s%%", filter.SearchCity)).Order(fmt.Sprintf("%s %s", columnKey[filter.SortColumn], filter.SortBy)).Find(&house).Error
+	err := h.db.Model(&entity.House{}).Joins("LEFT JOIN city_tab ON city_tab.id = house_tab.city_id").Joins("LEFT JOIN reservation_tab ON reservation_tab.house_id = house_tab.id AND reservation_tab.check_in_date <= ? AND reservation_tab.check_out_date > ?", filter.CheckOutDate, filter.CheckInDate).Where("reservation_tab.id IS NULL").Where("house_tab.name ILIKE ?", fmt.Sprintf("%%%s%%", filter.SearchName)).Where("city_tab.name ILIKE ?", fmt.Sprintf("%%%s%%", filter.SearchCity)).Order(fmt.Sprintf("%s %s", columnKey[filter.SortColumn], filter.SortBy)).Preload("City").Preload("Photo").Find(&house).Error
 	if err != nil {
 		return nil, err
 	}

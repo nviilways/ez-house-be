@@ -30,7 +30,7 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 	
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
-        AllowMethods:     []string{"POST", "GET", "PATCH"},
+        AllowMethods:     []string{"POST", "GET", "PATCH", "DELETE"},
         AllowHeaders:     []string{"*"},
         ExposeHeaders:    []string{"Content-Length"},
         AllowCredentials: true,
@@ -46,12 +46,12 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 		}
 		house := v1API.Group("/houses")
 		{
-			house.GET("", h.UserGetHouseList)
+			house.GET("", h.UserGetHouseByVacancy)
 			house.GET("/:id", h.UserGetHouseById)
 			house.POST("", middleware.JWTAuthorization, middleware.AuthorizeHost, h.HostAddHouse)
 			house.DELETE("/:id", middleware.JWTAuthorization, middleware.AuthorizeAdminOrHost, h.HostDeleteHouse)
 			house.PATCH("/:id", middleware.JWTAuthorization, middleware.AuthorizeHost, h.HostUpdateHouse)
-			house.GET("/vacant", h.UserGetHouseByVacancy)
+			// house.GET("/vacant", h.UserGetHouseByVacancy)
 			house.GET("/host", middleware.JWTAuthorization, middleware.AuthorizeHost, h.UserGetHouseByHost)
 			house.POST("/:id/photos", middleware.JWTAuthorization, middleware.AuthorizeHost, h.HostAddPhotoHouse)
 			// house.POST("/:id/photo/:id", middleware.JWTAuthorization, middleware.AuthorizeHost, h.HostDeletePhotoHouse)
