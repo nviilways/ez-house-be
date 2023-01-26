@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"mime/multipart"
+	"time"
 
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/cloud"
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/dto"
@@ -151,10 +152,20 @@ func (h *houseRepositoryImpl) ValidateHouseOwner(id uint, user_id uint) bool {
 	return affected == 1
 }
 
+func (h *houseRepositoryImpl) ValidateHouseNoReservation(id uint) bool {
+	affected := h.db.Where("house_id = ? AND check_out_date >= ?", id, time.Now()).First(&entity.Reservation{}).RowsAffected
+	return affected == 1
+}
+
 func (h *houseRepositoryImpl) DeleteHouse(id uint, user_id uint) (*entity.House, error) {
 	isValid := h.ValidateHouseOwner(id, user_id)
 	if !isValid {
 		return nil, errs.ErrRecordNotFound
+	}
+
+	isDone := h.ValidateHouseNoReservation(id)
+	if !isDone {
+		return nil, errs.ErrHouseStillReserved
 	}
 
 	var house *entity.House
