@@ -64,6 +64,16 @@ func (h *Handler) UserGetHouseByVacancy(c *gin.Context) {
 		sortBy = "asc"
 	}
 
+	page, err := strconv.Atoi(c.Query("page"))
+	if page == 0 || err != nil {
+		page = 1
+	}
+
+	limit, err := strconv.Atoi(c.Query("limit"))
+	if limit == 0 || err != nil {
+		limit = 1
+	} 
+
 	searchName := c.Query("searchname")
 	searchCity := c.Query("searchcity")
 
@@ -76,13 +86,22 @@ func (h *Handler) UserGetHouseByVacancy(c *gin.Context) {
 		SearchCity:   searchCity,
 	}
 
-	result, err2 := h.houseUsecase.GetHouseListByVacancy(reqFilter)
+	pagination := &dto.Pagination{
+		Page: page,
+		Limit: limit,
+	}
+
+	result, count, err2 := h.houseUsecase.GetHouseListByVacancy(reqFilter, pagination)
 	if err2 != nil {
 		errorResponse(c, http.StatusInternalServerError, err2.Error())
 		return
 	}
 
-	JSONResponse(c, http.StatusOK, result)
+	pagination.Count = count
+
+	pagination.Data = result
+
+	JSONResponse(c, http.StatusOK, pagination)
 }
 
 func (h *Handler) UserGetHouseByHost(c *gin.Context) {

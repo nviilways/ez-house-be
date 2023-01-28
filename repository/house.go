@@ -18,7 +18,7 @@ import (
 type HouseRepository interface {
 	GetHouseByID(uint) (*entity.House, error)
 	GetHouseList() ([]*entity.House, error)
-	GetHouseListByVacancy(*dto.FilterHouse) ([]*entity.House, error)
+	GetHouseListByVacancy(*dto.FilterHouse, *dto.Pagination) ([]*entity.House, int, error)
 	GetHouseByHost(uint) ([]*entity.House, error)
 	AddHouse(*entity.House, []*multipart.FileHeader) (*entity.House, error)
 	UpdateHouse(uint, *entity.House) (*entity.House, error)
@@ -66,7 +66,7 @@ func (h *houseRepositoryImpl) GetHouseList() ([]*entity.House, error) {
 	return house, nil
 }
 
-func (h *houseRepositoryImpl) GetHouseListByVacancy(filter *dto.FilterHouse) ([]*entity.House, error) {
+func (h *houseRepositoryImpl) GetHouseListByVacancy(filter *dto.FilterHouse, pagination *dto.Pagination) ([]*entity.House, int,error) {
 	var house []*entity.House
 	var columnKey = map[string]string {
 		"name": "house_tab.name",
@@ -74,12 +74,14 @@ func (h *houseRepositoryImpl) GetHouseListByVacancy(filter *dto.FilterHouse) ([]
 		"city": "city_tab.name",
 	}
 
-	err := h.db.Model(&entity.House{}).Joins("LEFT JOIN city_tab ON city_tab.id = house_tab.city_id").Joins("LEFT JOIN reservation_tab ON reservation_tab.house_id = house_tab.id AND reservation_tab.check_in_date <= ? AND reservation_tab.check_out_date > ?", filter.CheckOutDate, filter.CheckInDate).Where("reservation_tab.id IS NULL").Where("house_tab.name ILIKE ?", fmt.Sprintf("%%%s%%", filter.SearchName)).Where("city_tab.name ILIKE ?", fmt.Sprintf("%%%s%%", filter.SearchCity)).Order(fmt.Sprintf("%s %s", columnKey[filter.SortColumn], filter.SortBy)).Preload("City").Preload("Photo").Find(&house).Error
-	if err != nil {
-		return nil, err
+	query := h.db.Model(&entity.House{}).Joins("LEFT JOIN city_tab ON city_tab.id = house_tab.city_id").Joins("LEFT JOIN reservation_tab ON reservation_tab.house_id = house_tab.id AND reservation_tab.check_in_date <= ? AND reservation_tab.check_out_date > ?", filter.CheckOutDate, filter.CheckInDate).Where("reservation_tab.id IS NULL").Where("house_tab.name ILIKE ?", fmt.Sprintf("%%%s%%", filter.SearchName)).Where("city_tab.name ILIKE ?", fmt.Sprintf("%%%s%%", filter.SearchCity)).Order(fmt.Sprintf("%s %s", columnKey[filter.SortColumn], filter.SortBy)).Preload("City").Preload("Photo").Find(&house)
+	if query.Error != nil {
+		return nil, 0, query.Error
 	}
 
-	return house, nil
+	count := int(query.RowsAffected)
+
+	return house, count, nil
 }
 
 func (h *houseRepositoryImpl) GetHouseByHost(id uint) ([]*entity.House, error) {
