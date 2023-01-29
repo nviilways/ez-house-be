@@ -14,6 +14,7 @@ type FilterHouse struct {
 	SortBy string
 	SearchName string
 	SearchCity string
+	SearchGuest int
 }
 
 type NewHouse struct {

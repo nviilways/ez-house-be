@@ -71,8 +71,13 @@ func (h *Handler) UserGetHouseByVacancy(c *gin.Context) {
 
 	limit, err := strconv.Atoi(c.Query("limit"))
 	if limit == 0 || err != nil {
-		limit = 1
-	} 
+		limit = 10
+	}
+
+	guest, err := strconv.Atoi(c.Query("guest"))
+	if guest == 0 || err != nil {
+		guest = 1
+	}
 
 	searchName := c.Query("searchname")
 	searchCity := c.Query("searchcity")
@@ -84,6 +89,7 @@ func (h *Handler) UserGetHouseByVacancy(c *gin.Context) {
 		SortBy:       sortBy,
 		SearchName:   searchName,
 		SearchCity:   searchCity,
+		SearchGuest:  guest,
 	}
 
 	pagination := &dto.Pagination{
