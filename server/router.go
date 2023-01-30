@@ -51,7 +51,6 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 			house.POST("", middleware.JWTAuthorization, middleware.AuthorizeHost, h.HostAddHouse)
 			house.DELETE("/:id", middleware.JWTAuthorization, middleware.AuthorizeAdminOrHost, h.HostDeleteHouse)
 			house.PATCH("/:id", middleware.JWTAuthorization, middleware.AuthorizeHost, h.HostUpdateHouse)
-			// house.GET("/vacant", h.UserGetHouseByVacancy)
 			house.GET("/host", middleware.JWTAuthorization, middleware.AuthorizeHost, h.UserGetHouseByHost)
 			house.POST("/:id/photos", middleware.JWTAuthorization, middleware.AuthorizeHost, h.HostAddPhotoHouse)
 			// house.POST("/:id/photo/:id", middleware.JWTAuthorization, middleware.AuthorizeHost, h.HostDeletePhotoHouse)
@@ -60,6 +59,7 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 		{
 			reservation.POST("", middleware.JWTAuthorization, h.UseAddReservation)
 		}
+		v1API.GET("/cities", h.UserGetCityList)
 		v1API.POST("/register", h.UserRegister)
 		v1API.POST("/login", h.UserLogin)
 		v1API.GET("/me", middleware.JWTAuthorization, h.UserDetails)

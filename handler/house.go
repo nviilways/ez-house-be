@@ -31,8 +31,8 @@ func (h *Handler) UserGetHouseById(c *gin.Context) {
 	JSONResponse(c, http.StatusOK, result)
 }
 
-func (h *Handler) UserGetHouseList(c *gin.Context) {
-	result, err := h.houseUsecase.GetHouseList()
+func (h *Handler) UserGetCityList(c *gin.Context) {
+	result, err := h.houseUsecase.GetCityList()
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
 		return

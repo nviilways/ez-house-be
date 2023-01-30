@@ -10,7 +10,7 @@ import (
 
 type HouseUsecase interface {
 	GetHouseByID(uint) (*entity.House, error)
-	GetHouseList() ([]*entity.House, error)
+	GetCityList() ([]*entity.City, error)
 	GetHouseListByVacancy(*dto.FilterHouse, *dto.Pagination) ([]*entity.House, int, error)
 	GetHouseByHost(uint) ([]*entity.House, error)
 	AddHouse(*entity.House, []*multipart.FileHeader) (*entity.House, error)
@@ -37,8 +37,8 @@ func (h *houseUsecaseImpl) GetHouseByID(id uint) (*entity.House, error) {
 	return h.houseRepository.GetHouseByID(id)
 }
 
-func (h *houseUsecaseImpl) GetHouseList() ([]*entity.House, error) {
-	return h.houseRepository.GetHouseList()
+func (h *houseUsecaseImpl) GetCityList() ([]*entity.City, error) {
+	return h.houseRepository.GetCityList()
 }
 
 func (h *houseUsecaseImpl) GetHouseListByVacancy(filter *dto.FilterHouse, pagination *dto.Pagination) ([]*entity.House, int, error) {

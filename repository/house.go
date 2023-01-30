@@ -17,7 +17,7 @@ import (
 
 type HouseRepository interface {
 	GetHouseByID(uint) (*entity.House, error)
-	GetHouseList() ([]*entity.House, error)
+	GetCityList() ([]*entity.City, error)
 	GetHouseListByVacancy(*dto.FilterHouse, *dto.Pagination) ([]*entity.House, int, error)
 	GetHouseByHost(uint) ([]*entity.House, error)
 	AddHouse(*entity.House, []*multipart.FileHeader) (*entity.House, error)
@@ -55,15 +55,15 @@ func (h *houseRepositoryImpl) GetHouseByID(id uint) (*entity.House, error) {
 	return house, nil
 }
 
-func (h *houseRepositoryImpl) GetHouseList() ([]*entity.House, error) {
-	var house []*entity.House
+func (h *houseRepositoryImpl) GetCityList() ([]*entity.City, error) {
+	var city []*entity.City
 
-	err := h.db.Preload("User").Preload("City").Preload("Photo").Find(&house).Error
+	err := h.db.Find(&city).Error
 	if err != nil {
 		return nil, err
 	}
 
-	return house, nil
+	return city, nil
 }
 
 func (h *houseRepositoryImpl) GetHouseListByVacancy(filter *dto.FilterHouse, pagination *dto.Pagination) ([]*entity.House, int,error) {
