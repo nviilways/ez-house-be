@@ -8,6 +8,7 @@ import (
 const MinTopUpGames = 500000
 
 type TransactionRepository interface {
+	GetTransactionByWalletId(uint) ([]*entity.Transaction, error)
 	TopUp(int, *entity.Transaction) (*entity.Transaction, error)
 }
 
@@ -58,4 +59,15 @@ func (t *transactionRepositoryImpl) TopUp(target int, tr *entity.Transaction) (*
 	}
 
 	return tr, nil
+}
+
+func (t *transactionRepositoryImpl) GetTransactionByWalletId(id uint) ([]*entity.Transaction, error) {
+	var transaction []*entity.Transaction
+
+	err := t.db.Where("wallet_id = ?", id).Find(&transaction).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return transaction, nil
 }

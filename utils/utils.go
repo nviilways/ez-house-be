@@ -28,6 +28,7 @@ func GenerateAccessToken(user *entity.User) (*dto.Token, error) {
 		ID: user.ID,
 		Email: user.Email,
 		RoleID: user.RoleID,
+		WalletID: user.Wallet.ID,
 		RegisteredClaims: jwt.RegisteredClaims{
 			IssuedAt: jwt.NewNumericDate(time.Now()),
 			Issuer: "Ez House",

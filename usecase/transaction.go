@@ -6,6 +6,7 @@ import (
 )
 
 type TransactionUsecase interface {
+	GetTransactionByWalletId(uint) ([]*entity.Transaction, error)
 	TopUp(int, *entity.Transaction) (*entity.Transaction, error)
 }
 
@@ -21,6 +22,10 @@ func NewTransactionUsecase(cfg *TransactionUConfig) TransactionUsecase {
 	return &transactionUsecaseImpl {
 		transactionRepository: cfg.TransactionRepository,
 	}
+}
+
+func (t *transactionUsecaseImpl) GetTransactionByWalletId(id uint) ([]*entity.Transaction, error) {
+	return t.transactionRepository.GetTransactionByWalletId(id)
 }
 
 func (t *transactionUsecaseImpl) TopUp(target int,tr *entity.Transaction) (*entity.Transaction, error) {

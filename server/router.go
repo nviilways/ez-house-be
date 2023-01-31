@@ -60,6 +60,7 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 			reservation.POST("", middleware.JWTAuthorization, h.UseAddReservation)
 		}
 		v1API.GET("/cities", h.UserGetCityList)
+		v1API.GET("/transactions", middleware.JWTAuthorization, h.UserGetTransaction)
 		v1API.POST("/register", h.UserRegister)
 		v1API.POST("/login", h.UserLogin)
 		v1API.GET("/me", middleware.JWTAuthorization, h.UserDetails)

@@ -28,3 +28,16 @@ func (h *Handler) UserTopUp(c *gin.Context) {
 
 	JSONResponse(c, http.StatusOK, result)
 }
+
+func (h *Handler) UserGetTransaction(c *gin.Context) {
+	claim, _ := c.Get("claim")
+	parsedClaim := entity.Claim(claim.(entity.Claim))
+
+	result, err := h.transactionUsecase.GetTransactionByWalletId(parsedClaim.WalletID)
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	JSONResponse(c, http.StatusOK, result)
+}

@@ -12,6 +12,29 @@ type TransactionRepository struct {
 	mock.Mock
 }
 
+// GetTransactionByWalletId provides a mock function with given fields: _a0
+func (_m *TransactionRepository) GetTransactionByWalletId(_a0 uint) ([]*entity.Transaction, error) {
+	ret := _m.Called(_a0)
+
+	var r0 []*entity.Transaction
+	if rf, ok := ret.Get(0).(func(uint) []*entity.Transaction); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*entity.Transaction)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(uint) error); ok {
+		r1 = rf(_a0)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // TopUp provides a mock function with given fields: _a0, _a1
 func (_m *TransactionRepository) TopUp(_a0 int, _a1 *entity.Transaction) (*entity.Transaction, error) {
 	ret := _m.Called(_a0, _a1)
