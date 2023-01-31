@@ -17,7 +17,6 @@ type Reservation struct {
 	CheckOutDate time.Time `json:"check_out_date"`
 	TotalPrice int `json:"total_price"`
 	BookingCode string `json:"booking_code"`
-	CommissionStatus string `json:"commission_status"`
 }
 
 func (Reservation) TableName() string {

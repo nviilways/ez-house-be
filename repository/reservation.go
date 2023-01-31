@@ -17,7 +17,8 @@ const commissionPay = 0.8
 const pickupCostRate = 100000
 
 type ReservationRepository interface {
-	// GetReservation(*entity.Reservation) (*entity.Reservation, error)
+	GetReservationListByUserId(uint) ([]*entity.Reservation, error)
+	GetReservationById(uint) (*entity.Reservation, error)
 	AddReservation(*entity.Reservation) (*entity.Reservation, error)
 }
 
@@ -94,7 +95,6 @@ func (r *reservationRepositoryImpl) GetHostWallet(user_id uint) (*entity.Wallet,
 }
 
 func (r *reservationRepositoryImpl) AddReservation(res *entity.Reservation) (*entity.Reservation, error) {
-	res.CommissionStatus = "PENDING"
 	res.BookingCode = fmt.Sprintf("BOOK-EZ-%d-%d", res.UserId, time.Now().UnixMicro())
 	err := r.ValidateReservation(res.CheckInDate, res.CheckOutDate, res.HouseId)
 	if err != nil {
@@ -165,6 +165,34 @@ func (r *reservationRepositoryImpl) AddReservation(res *entity.Reservation) (*en
 
 	if err2 != nil {
 		return nil, err2
+	}
+
+	return res, nil
+}
+
+func (r *reservationRepositoryImpl) GetReservationListByUserId(id uint) ([]*entity.Reservation, error) {
+	var res []*entity.Reservation
+
+	err := r.db.Where("user_id = ?", id).Preload("House").Find(&res).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, errs.ErrRecordNotFound
+		}
+		return nil, err
+	}
+
+	return res, nil
+}
+
+func (r *reservationRepositoryImpl) GetReservationById(id uint) (*entity.Reservation, error) {
+	var res *entity.Reservation
+
+	err := r.db.Where("id = ?", id).Preload("House").First(&res).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, errs.ErrRecordNotFound
+		}
+		return nil, err
 	}
 
 	return res, nil

@@ -64,7 +64,7 @@ func (t *transactionRepositoryImpl) TopUp(target int, tr *entity.Transaction) (*
 func (t *transactionRepositoryImpl) GetTransactionByWalletId(id uint) ([]*entity.Transaction, error) {
 	var transaction []*entity.Transaction
 
-	err := t.db.Where("wallet_id = ?", id).Find(&transaction).Error
+	err := t.db.Where("wallet_id = ?", id).Preload("TransactionType").Find(&transaction).Error
 	if err != nil {
 		return nil, err
 	}

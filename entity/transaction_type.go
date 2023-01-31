@@ -5,7 +5,7 @@ import "gorm.io/gorm"
 type TransactionType struct {
 	ID uint `json:"id"`
 	gorm.Model `json:"-"`
-	Type string `json:"type"`
+	Name string `json:"name"`
 }
 
 func (TransactionType) TableName() string {

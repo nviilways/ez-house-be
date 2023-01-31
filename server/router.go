@@ -57,7 +57,9 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 		}
 		reservation := v1API.Group("/reservations")
 		{
-			reservation.POST("", middleware.JWTAuthorization, h.UseAddReservation)
+			reservation.POST("", middleware.JWTAuthorization, h.UserAddReservation)
+			reservation.GET("/:id", h.UserGetReservationById)
+			reservation.GET("/history", middleware.JWTAuthorization, h.UserGetReservationByUserId)
 		}
 		v1API.GET("/cities", h.UserGetCityList)
 		v1API.GET("/transactions", middleware.JWTAuthorization, h.UserGetTransaction)

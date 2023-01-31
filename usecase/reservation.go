@@ -6,6 +6,8 @@ import (
 )
 
 type ReservationUsecase interface {
+	GetReservationListByUserId(uint) ([]*entity.Reservation, error)
+	GetReservationById(uint) (*entity.Reservation, error)
 	AddReservation(*entity.Reservation) (*entity.Reservation, error)
 }
 
@@ -25,4 +27,12 @@ func NewReservationUsecase(cfg *ReservationUConfig) ReservationUsecase {
 
 func (r *reservationUsecaseImpl) AddReservation(res *entity.Reservation) (*entity.Reservation, error) {
 	return r.reservationRepository.AddReservation(res)
+}
+
+func (r *reservationUsecaseImpl) GetReservationListByUserId(id uint) ([]*entity.Reservation, error) {
+	return r.reservationRepository.GetReservationListByUserId(id)
+}
+
+func (r *reservationUsecaseImpl) GetReservationById(id uint) (*entity.Reservation, error) {
+	return r.reservationRepository.GetReservationById(id)
 }

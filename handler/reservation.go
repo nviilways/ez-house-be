@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/dto"
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/entity"
@@ -9,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *Handler) UseAddReservation(c *gin.Context) {
+func (h *Handler) UserAddReservation(c *gin.Context) {
 	var reqReserve dto.NewReservation
 	err := c.ShouldBindJSON(&reqReserve)
 	if err != nil {
@@ -35,4 +36,37 @@ func (h *Handler) UseAddReservation(c *gin.Context) {
 	}
 
 	JSONResponse(c, http.StatusCreated, result)
+}
+
+func (h *Handler) UserGetReservationById(c *gin.Context) {
+	id, errParse := strconv.Atoi(c.Param("id"))
+	if errParse != nil {
+		errorResponse(c, http.StatusBadRequest, errParse.Error())
+		return
+	}
+
+	result, err := h.reservationUsecase.GetReservationById(uint(id))
+	if err != nil {
+		if err == errs.ErrRecordNotFound {
+			errorResponse(c, http.StatusBadRequest, err.Error())
+			return
+		}
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	JSONResponse(c, http.StatusOK, result)
+}
+
+func (h *Handler) UserGetReservationByUserId(c *gin.Context) {
+	claim, _ := c.Get("claim")
+	parsedClaim := entity.Claim(claim.(entity.Claim))
+
+	result, err := h.reservationUsecase.GetReservationListByUserId(parsedClaim.ID)
+	if err != nil {
+		errorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	JSONResponse(c, http.StatusOK, result)
 }
