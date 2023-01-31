@@ -74,7 +74,7 @@ func (h *houseRepositoryImpl) GetHouseListByVacancy(filter *dto.FilterHouse, pag
 		"city": "city_tab.name",
 	}
 
-	query := h.db.Model(&entity.House{}).Joins("LEFT JOIN city_tab ON city_tab.id = house_tab.city_id").Joins("LEFT JOIN reservation_tab ON reservation_tab.house_id = house_tab.id AND reservation_tab.check_in_date <= ? AND reservation_tab.check_out_date > ?", filter.CheckOutDate, filter.CheckInDate).Where("reservation_tab.id IS NULL").Where("house_tab.name ILIKE ?", fmt.Sprintf("%%%s%%", filter.SearchName)).Where("city_tab.name ILIKE ?", fmt.Sprintf("%%%s%%", filter.SearchCity)).Where("house_tab.max_guest >= ?", filter.SearchGuest).Order(fmt.Sprintf("%s %s", columnKey[filter.SortColumn], filter.SortBy)).Preload("City").Preload("Photo").Find(&house)
+	query := h.db.Model(&entity.House{}).Joins("LEFT JOIN city_tab ON city_tab.id = house_tab.city_id").Joins("LEFT JOIN reservation_tab ON reservation_tab.house_id = house_tab.id AND reservation_tab.check_in_date <= ? AND reservation_tab.check_out_date > ?", filter.CheckOutDate, filter.CheckInDate).Where("reservation_tab.id IS NULL").Where("house_tab.name ILIKE ?", fmt.Sprintf("%%%s%%", filter.SearchName)).Where("city_tab.name ILIKE ?", fmt.Sprintf("%%%s%%", filter.SearchCity)).Where("house_tab.max_guest >= ?", filter.SearchGuest).Order(fmt.Sprintf("%s %s", columnKey[filter.SortColumn], filter.SortBy)).Limit(pagination.Limit).Offset((pagination.Page - 1) * pagination.Limit ).Preload("City").Preload("Photo").Find(&house)
 	if query.Error != nil {
 		return nil, 0, query.Error
 	}
