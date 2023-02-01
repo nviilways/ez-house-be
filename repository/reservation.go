@@ -37,7 +37,8 @@ func NewReservationRepository(cfg *ReservationRConfig) ReservationRepository {
 }
 
 func (r *reservationRepositoryImpl) ValidateReservation(checkIn time.Time, checkOut time.Time, house_id uint) error {
-	if checkIn.Before(time.Now()) {
+	now := time.Now()
+	if checkIn.Before(now) && !(checkIn.Format("2006-01-02") == now.Format("2006-01-02")) {
 		return errs.ErrInvalidCheckDate
 	}
 

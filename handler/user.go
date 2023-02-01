@@ -142,5 +142,5 @@ func (h *Handler) UserUpdateRole(c *gin.Context) {
 		return
 	}
 
-	JSONResponse(c, http.StatusOK, nil)
+	JSONResponse(c, http.StatusNoContent, nil)
 }
