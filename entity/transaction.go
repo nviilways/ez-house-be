@@ -1,6 +1,10 @@
 package entity
 
-import "gorm.io/gorm"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 type Transaction struct {
 	ID uint `json:"id"`
@@ -9,6 +13,7 @@ type Transaction struct {
 	TransactionTypeID uint `json:"transaction_type_id"`
 	TransactionType *TransactionType `json:"transaction_type,omitempty"`
 	Balance int `json:"balance"`
+	CreatedAt time.Time `json:"created_at"`
  }
 
 func (Transaction) TableName() string {

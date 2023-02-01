@@ -73,7 +73,7 @@ func (h *Handler) UserLogout(c *gin.Context) {
 		return
 	}
 
-	JSONResponse(c, http.StatusOK, nil)
+	JSONResponse(c, http.StatusNoContent, nil)
 }
 
 func (h *Handler) UserDetails(c *gin.Context) {

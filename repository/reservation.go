@@ -173,7 +173,7 @@ func (r *reservationRepositoryImpl) AddReservation(res *entity.Reservation) (*en
 func (r *reservationRepositoryImpl) GetReservationListByUserId(id uint) ([]*entity.Reservation, error) {
 	var res []*entity.Reservation
 
-	err := r.db.Where("user_id = ?", id).Preload("House").Find(&res).Error
+	err := r.db.Where("user_id = ?", id).Preload("House.City").Find(&res).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, errs.ErrRecordNotFound
