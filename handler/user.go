@@ -3,6 +3,7 @@ package handler
 import (
 	"errors"
 	"net/http"
+	"strconv"
 
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/config"
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/dto"
@@ -110,6 +111,13 @@ func (h *Handler) UserUpdate(c *gin.Context) {
 	err := c.ShouldBindJSON(&reqUpdate)
 	if(err != nil) {
 		errorTag(c, err)
+		return
+	}
+
+	id, _ := strconv.Atoi(c.Param("id"))
+	if(id != int(parsedClaim.ID)) {
+		errorResponse(c, http.StatusUnauthorized, errs.ErrInvalidToken.Error())
+		return
 	}
 
 	newUpdate := reqUpdate.ToUser()
@@ -118,6 +126,7 @@ func (h *Handler) UserUpdate(c *gin.Context) {
 	result, err2 := h.userUsecase.Update(newUpdate)
 	if(err2 != nil) {
 		errorResponse(c, http.StatusInternalServerError, err2.Error())
+		return
 	}
 
 	reqUpdate.FromUser(result)

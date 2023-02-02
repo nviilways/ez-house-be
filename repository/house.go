@@ -19,7 +19,7 @@ type HouseRepository interface {
 	GetHouseByID(uint) (*entity.House, error)
 	GetCityList() ([]*entity.City, error)
 	GetHouseListByVacancy(*dto.FilterHouse, *dto.Pagination) ([]*entity.House, int, error)
-	GetHouseByHost(uint) ([]*entity.House, error)
+	GetHouseByHost(uint, *dto.FilterHouse, *dto.Pagination) ([]*entity.House, int, error)
 	AddHouse(*entity.House, []*multipart.FileHeader) (*entity.House, error)
 	UpdateHouse(uint, *entity.House) (*entity.House, error)
 	DeleteHouse(uint, uint) (*entity.House, error)
@@ -90,15 +90,28 @@ func (h *houseRepositoryImpl) GetHouseListByVacancy(filter *dto.FilterHouse, pag
 	return house, retCount, nil
 }
 
-func (h *houseRepositoryImpl) GetHouseByHost(id uint) ([]*entity.House, error) {
+func (h *houseRepositoryImpl) GetHouseByHost(id uint, filter *dto.FilterHouse, pagination *dto.Pagination) ([]*entity.House, int, error) {
 	var house []*entity.House
-
-	err := h.db.Where("user_id = ?", id).Find(&house).Error
-	if err != nil {
-		return nil, err
+	var count int64
+	var columnKey = map[string]string {
+		"name": "house_tab.name",
+		"price": "house_tab.price",
+		"city": "city_tab.name",
 	}
 
-	return house, nil
+	err := h.db.Model(&entity.House{}).Joins("LEFT JOIN city_tab ON city_tab.id = house_tab.city_id").Where("user_id = ?", id).Where("house_tab.name ILIKE ?", fmt.Sprintf("%%%s%%", filter.SearchName)).Where("city_tab.name ILIKE ?", fmt.Sprintf("%%%s%%", filter.SearchCity)).Where("house_tab.max_guest >= ?", filter.SearchGuest).Order(fmt.Sprintf("%s %s", columnKey[filter.SortColumn], filter.SortBy)).Limit(pagination.Limit).Offset((pagination.Page - 1) * pagination.Limit ).Preload("City").Preload("Photo").Find(&house).Error
+	if err != nil {
+		return nil, 0, err
+	}
+	
+	countErr := h.db.Model(&entity.House{}).Joins("LEFT JOIN city_tab ON city_tab.id = house_tab.city_id").Where("user_id = ?", id).Where("house_tab.name ILIKE ?", fmt.Sprintf("%%%s%%", filter.SearchName)).Where("city_tab.name ILIKE ?", fmt.Sprintf("%%%s%%", filter.SearchCity)).Where("house_tab.max_guest >= ?", filter.SearchGuest).Order(fmt.Sprintf("%s %s", columnKey[filter.SortColumn], filter.SortBy)).Limit(pagination.Limit).Offset((pagination.Page - 1) * pagination.Limit ).Preload("City").Preload("Photo").Count(&count).Error
+	if countErr != nil {
+		return nil, 0, countErr
+	}
+
+	retCount := int(count)
+
+	return house, retCount, nil
 }
 
 func (h *houseRepositoryImpl) AddHouse(house *entity.House, photos []*multipart.FileHeader) (*entity.House, error) {

@@ -61,15 +61,22 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 			reservation.GET("/:id", h.UserGetReservationById)
 			reservation.GET("/history", middleware.JWTAuthorization, h.UserGetReservationByUserId)
 		}
-		v1API.GET("/cities", h.UserGetCityList)
-		v1API.GET("/transactions", middleware.JWTAuthorization, h.UserGetTransaction)
-		v1API.POST("/register", h.UserRegister)
-		v1API.POST("/login", h.UserLogin)
+		user := v1API.Group("/users")
+		{
+			user.PATCH("/host", middleware.JWTAuthorization, h.UserUpdateRole)
+			user.PATCH("/:id", middleware.JWTAuthorization, h.UserUpdate)
+		}
+		transaction := v1API.Group("/transactions")
+		{
+			transaction.GET("", middleware.JWTAuthorization, h.UserGetTransaction)
+			transaction.POST("/topup", middleware.JWTAuthorization, h.UserTopUp)
+		}
 		v1API.GET("/me", middleware.JWTAuthorization, h.UserDetails)
-		v1API.PATCH("/update", middleware.JWTAuthorization, h.UserUpdate)
+		v1API.GET("/cities", h.UserGetCityList)
+		v1API.POST("/login", h.UserLogin)
 		v1API.POST("/logout", middleware.JWTAuthorization, h.UserLogout)
-		v1API.POST("/topup", middleware.JWTAuthorization, h.UserTopUp)
-		v1API.PATCH("/update/role", middleware.JWTAuthorization, h.UserUpdateRole)
+		v1API.POST("/register", h.UserRegister)
+
 	}
 
 	return router

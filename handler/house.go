@@ -114,13 +114,58 @@ func (h *Handler) UserGetHouseByHost(c *gin.Context) {
 	claim, _ := c.Get("claim")
 	parsedClaim := entity.Claim(claim.(entity.Claim))
 
-	result, err := h.houseUsecase.GetHouseByHost(parsedClaim.ID)
+	sortColumn := c.Query("sort")
+	if sortColumn == "" {
+		sortColumn = "name"
+	}
+
+	sortBy := c.Query("sortby")
+	if sortBy == "" {
+		sortBy = "asc"
+	}
+
+	page, err := strconv.Atoi(c.Query("page"))
+	if page == 0 || err != nil {
+		page = 1
+	}
+
+	limit, err := strconv.Atoi(c.Query("limit"))
+	if limit == 0 || err != nil {
+		limit = 10
+	}
+
+	guest, err := strconv.Atoi(c.Query("guest"))
+	if guest == 0 || err != nil {
+		guest = 1
+	}
+
+	searchName := c.Query("searchname")
+	searchCity := c.Query("searchcity")
+
+	reqFilter := &dto.FilterHouse{
+		SortColumn:   sortColumn,
+		SortBy:       sortBy,
+		SearchName:   searchName,
+		SearchCity:   searchCity,
+		SearchGuest:  guest,
+	}
+
+	pagination := &dto.Pagination{
+		Page: page,
+		Limit: limit,
+	}
+
+	result, count, err := h.houseUsecase.GetHouseByHost(parsedClaim.ID, reqFilter, pagination)
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	JSONResponse(c, http.StatusOK, result)
+	pagination.Count = count
+
+	pagination.Data = result
+
+	JSONResponse(c, http.StatusOK, pagination)
 }
 
 func (h *Handler) HostAddHouse(c *gin.Context) {
