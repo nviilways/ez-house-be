@@ -68,6 +68,7 @@ func (h *houseRepositoryImpl) GetCityList() ([]*entity.City, error) {
 
 func (h *houseRepositoryImpl) GetHouseListByVacancy(filter *dto.FilterHouse, pagination *dto.Pagination) ([]*entity.House, int,error) {
 	var house []*entity.House
+	var count int64
 	var columnKey = map[string]string {
 		"name": "house_tab.name",
 		"price": "house_tab.price",
@@ -79,9 +80,14 @@ func (h *houseRepositoryImpl) GetHouseListByVacancy(filter *dto.FilterHouse, pag
 		return nil, 0, query.Error
 	}
 
-	count := int(query.RowsAffected)
+	countQuery := h.db.Model(&entity.House{}).Joins("LEFT JOIN city_tab ON city_tab.id = house_tab.city_id").Joins("LEFT JOIN reservation_tab ON reservation_tab.house_id = house_tab.id AND reservation_tab.check_in_date <= ? AND reservation_tab.check_out_date > ?", filter.CheckOutDate, filter.CheckInDate).Where("reservation_tab.id IS NULL").Where("house_tab.name ILIKE ?", fmt.Sprintf("%%%s%%", filter.SearchName)).Where("city_tab.name ILIKE ?", fmt.Sprintf("%%%s%%", filter.SearchCity)).Where("house_tab.max_guest >= ?", filter.SearchGuest).Count(&count)
+	if countQuery.Error != nil {
+		return nil, 0, countQuery.Error
+	}
 
-	return house, count, nil
+	retCount := int(count)
+
+	return house, retCount, nil
 }
 
 func (h *houseRepositoryImpl) GetHouseByHost(id uint) ([]*entity.House, error) {
