@@ -14,7 +14,6 @@ const hourPerDay = 24
 const debitType = 2
 const commissionType = 4
 const commissionPay = 0.8
-const pickupCostRate = 100000
 
 type ReservationRepository interface {
 	GetReservationListByUserId(uint) ([]*entity.Reservation, error)
@@ -188,7 +187,7 @@ func (r *reservationRepositoryImpl) GetReservationListByUserId(id uint) ([]*enti
 func (r *reservationRepositoryImpl) GetReservationById(id uint) (*entity.Reservation, error) {
 	var res *entity.Reservation
 
-	err := r.db.Where("id = ?", id).Preload("House").First(&res).Error
+	err := r.db.Where("id = ?", id).Preload("House.City").Preload("House.Photo").First(&res).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, errs.ErrRecordNotFound

@@ -16,6 +16,7 @@ type RouterConfig struct {
 	AdminUsecase usecase.AdminUsecase
 	HouseUsecase usecase.HouseUsecase
 	ReservationUsecase usecase.ReservationUsecase
+	PickupUsecase usecase.PickupUsecase
 }
 
 func NewRouter(cfg *RouterConfig) *gin.Engine {
@@ -26,6 +27,7 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 		AdminUsecase: cfg.AdminUsecase,
 		HouseUsecase: cfg.HouseUsecase,
 		ReservationUsecase: cfg.ReservationUsecase,
+		PickupUsecase: cfg.PickupUsecase,
 	})
 	
 	router.Use(cors.New(cors.Config{
@@ -71,6 +73,7 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 			transaction.GET("", middleware.JWTAuthorization, h.UserGetTransaction)
 			transaction.POST("/topup", middleware.JWTAuthorization, h.UserTopUp)
 		}
+		v1API.POST("/pickups", middleware.JWTAuthorization, h.CreatePickup)
 		v1API.GET("/me", middleware.JWTAuthorization, h.UserDetails)
 		v1API.GET("/cities", h.UserGetCityList)
 		v1API.POST("/login", h.UserLogin)

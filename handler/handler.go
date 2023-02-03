@@ -8,6 +8,7 @@ type Handler struct {
 	adminUsecase usecase.AdminUsecase
 	houseUsecase usecase.HouseUsecase
 	reservationUsecase usecase.ReservationUsecase
+	pickupUsecase usecase.PickupUsecase
 }
 
 type Config struct {
@@ -16,6 +17,7 @@ type Config struct {
 	AdminUsecase usecase.AdminUsecase
 	HouseUsecase usecase.HouseUsecase
 	ReservationUsecase usecase.ReservationUsecase
+	PickupUsecase usecase.PickupUsecase
 }
 
 func New(cfg *Config) *Handler {
@@ -25,5 +27,6 @@ func New(cfg *Config) *Handler {
 		adminUsecase: cfg.AdminUsecase,
 		houseUsecase: cfg.HouseUsecase,
 		reservationUsecase: cfg.ReservationUsecase,
+		pickupUsecase: cfg.PickupUsecase,
 	}
 }

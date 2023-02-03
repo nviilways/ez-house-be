@@ -46,12 +46,20 @@ func createRouter() *gin.Engine {
 		ReservationRepository: reserveRepo,
 	})
 
+	pickupRepo := repository.NewPickupRepository(&repository.PickupRConfig{
+		DB: db,
+	})
+	pickupUsecase := usecase.NewPickupUsecase(&usecase.PickupUConfig{
+		PickupRepository: pickupRepo,
+	})
+
 	return NewRouter(&RouterConfig{
 		UserUsecase: userUsecase,
 		TransactionUsecase: txUsecase,
 		AdminUsecase: adminUsecase,
 		HouseUsecase: houseUsecase,
 		ReservationUsecase: reserveUsecase,
+		PickupUsecase: pickupUsecase,
 	})
 }
 

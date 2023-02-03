@@ -20,16 +20,18 @@ type FilterHouse struct {
 type NewHouse struct {
 	Name string `form:"name" binding:"required"`
 	Price int `form:"price" binding:"required"`
-	Description string `form:"description"`
+	Description string `form:"description" binding:"required"`
+	Address string `form:"address" binding:"required"`
 	CityID uint `form:"city_id" binding:"required"`
-	MaxGuest int `form:"max_guest"`
-	Photos []*multipart.FileHeader `form:"photo"`
+	MaxGuest int `form:"max_guest" binding:"required"`
+	Photos []*multipart.FileHeader `form:"photo" binding:"required"`
 }
 
 type UpdateHouse struct {
 	Name string `form:"name"`
 	Price int `form:"price"`
 	Description string `form:"description"`
+	Address string `form:"address"`
 	CityID uint `form:"city_id"`
 	MaxGuest int `form:"max_guest"`
 }
@@ -39,6 +41,7 @@ func (n *NewHouse) ToHouse() *entity.House {
 		Name: n.Name,
 		Price: n.Price,
 		Description: n.Description,
+		Address: n.Address,
 		CityID: n.CityID,
 		MaxGuest: n.MaxGuest,
 	}
@@ -49,6 +52,7 @@ func (u *UpdateHouse) ToHouse() *entity.House {
 		Name: u.Name,
 		Price: u.Price,
 		Description: u.Description,
+		Address: u.Address,
 		CityID: u.CityID,
 		MaxGuest: u.MaxGuest,
 	}

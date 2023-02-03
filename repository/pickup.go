@@ -8,6 +8,7 @@ import (
 )
 
 const updateStatus = 1
+const pickupCostRate = 100000
 
 type PickupRepository interface {
 	GetPickupById(uint) (*entity.Pickup, error)
@@ -77,13 +78,56 @@ func (r *pickupRepositoryImpl) GetPickupPrice(res *entity.Reservation) (*dto.Pic
 
 func (r *pickupRepositoryImpl) RequestPickup(pick *entity.Pickup) (*entity.Pickup, error) {
 	pick.PickupStatusID = 1
+	var user *entity.User
+	var reservation *entity.Reservation
 
-	errExist := r.db.Where("user_id = ? AND reservation_id = ?", pick.UserID, pick.ReservationID).First(&entity.Pickup{}).Error
-	if errExist != nil {
+	errUser := r.db.Where("id = ?", pick.UserID).Preload("Wallet").First(&user).Error
+	if errUser != nil {
+		return nil, errUser
+	}
+
+	errReservation := r.db.Where("id = ?", pick.ReservationID).Preload("House").First(&reservation).Error
+	if errReservation != nil {
+		return nil, errReservation
+	}
+
+	errExist := r.db.Where("user_id = ? AND reservation_id = ?", pick.UserID, pick.ReservationID).First(&entity.Pickup{}).RowsAffected
+	if errExist != 0 {
 		return nil, errs.ErrDoublePickup
 	}
 
-	err := r.db.Create(&pick).Error
+	price := pickupCostRate
+	if(reservation.House.CityID == user.CityID) {
+		price *= 3
+	}
+
+	err := r.db.Transaction(func(tx *gorm.DB) error {
+
+		if err := tx.Create(&pick).Error; err != nil {
+			return err
+		}
+
+		if err := tx.Model(&entity.Wallet{}).Where("id = ?", user.Wallet.ID).Update("balance", gorm.Expr("balance - ?", price)).Error; err != nil {
+			return err
+		}
+
+		transaction := &entity.Transaction{
+			WalletID: user.Wallet.ID,
+			TransactionTypeID: 2,
+			Balance: price,
+		}
+
+		if err := tx.Create(&transaction).Error; err != nil {
+			return err
+		}
+
+		if err := tx.Model(&entity.Reservation{}).Where("id = ?", pick.ReservationID).Update("total_price", gorm.Expr("total_price + ?", price)).Error; err != nil {
+			return err
+		}
+		
+		return nil
+	})
+	
 	if err != nil {
 		return nil, err
 	}
