@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/dto"
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/entity"
 	"gorm.io/gorm"
 )
@@ -8,7 +9,7 @@ import (
 const MinTopUpGames = 500000
 
 type TransactionRepository interface {
-	GetTransactionByWalletId(uint) ([]*entity.Transaction, error)
+	GetTransactionByWalletId(uint, *dto.Pagination) ([]*entity.Transaction, int, error)
 	TopUp(int, *entity.Transaction) (*entity.Transaction, error)
 }
 
@@ -61,13 +62,21 @@ func (t *transactionRepositoryImpl) TopUp(target int, tr *entity.Transaction) (*
 	return tr, nil
 }
 
-func (t *transactionRepositoryImpl) GetTransactionByWalletId(id uint) ([]*entity.Transaction, error) {
+func (t *transactionRepositoryImpl) GetTransactionByWalletId(id uint, pagination *dto.Pagination) ([]*entity.Transaction, int, error) {
 	var transaction []*entity.Transaction
+	var count int64
 
-	err := t.db.Where("wallet_id = ?", id).Preload("TransactionType").Find(&transaction).Error
+	err := t.db.Where("wallet_id = ?", id).Preload("TransactionType").Limit(pagination.Limit).Offset((pagination.Page - 1) * pagination.Limit).Find(&transaction).Error
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
-	return transaction, nil
+	errCount := t.db.Model(&entity.Transaction{}).Where("wallet_id = ?", id).Count(&count).Error
+	if errCount != nil {
+		return nil, 0, err
+	}
+
+	retCount := int(count)
+
+	return transaction, retCount, nil
 }

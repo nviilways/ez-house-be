@@ -19,21 +19,21 @@ type FilterHouse struct {
 
 type NewHouse struct {
 	Name string `form:"name" binding:"required"`
-	Price int `form:"price" binding:"required"`
+	Price int `form:"price" binding:"required,min=1"`
 	Description string `form:"description" binding:"required"`
 	Address string `form:"address" binding:"required"`
 	CityID uint `form:"city_id" binding:"required"`
-	MaxGuest int `form:"max_guest" binding:"required"`
+	MaxGuest int `form:"max_guest" binding:"required,min=1"`
 	Photos []*multipart.FileHeader `form:"photo" binding:"required"`
 }
 
 type UpdateHouse struct {
 	Name string `form:"name"`
-	Price int `form:"price"`
+	Price int `form:"price" binding:"min=1"`
 	Description string `form:"description"`
 	Address string `form:"address"`
 	CityID uint `form:"city_id"`
-	MaxGuest int `form:"max_guest"`
+	MaxGuest int `form:"max_guest" binding:"min=1"`
 }
 
 func (n *NewHouse) ToHouse() *entity.House {

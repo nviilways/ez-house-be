@@ -104,7 +104,7 @@ func (h *houseRepositoryImpl) GetHouseByHost(id uint, filter *dto.FilterHouse, p
 		return nil, 0, err
 	}
 	
-	countErr := h.db.Model(&entity.House{}).Joins("LEFT JOIN city_tab ON city_tab.id = house_tab.city_id").Where("user_id = ?", id).Where("house_tab.name ILIKE ?", fmt.Sprintf("%%%s%%", filter.SearchName)).Where("city_tab.name ILIKE ?", fmt.Sprintf("%%%s%%", filter.SearchCity)).Where("house_tab.max_guest >= ?", filter.SearchGuest).Order(fmt.Sprintf("%s %s", columnKey[filter.SortColumn], filter.SortBy)).Limit(pagination.Limit).Offset((pagination.Page - 1) * pagination.Limit ).Preload("City").Preload("Photo").Count(&count).Error
+	countErr := h.db.Model(&entity.House{}).Joins("LEFT JOIN city_tab ON city_tab.id = house_tab.city_id").Where("user_id = ?", id).Where("house_tab.name ILIKE ?", fmt.Sprintf("%%%s%%", filter.SearchName)).Where("city_tab.name ILIKE ?", fmt.Sprintf("%%%s%%", filter.SearchCity)).Where("house_tab.max_guest >= ?", filter.SearchGuest).Count(&count).Error
 	if countErr != nil {
 		return nil, 0, countErr
 	}

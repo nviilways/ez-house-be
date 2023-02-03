@@ -3,7 +3,7 @@ package dto
 import "git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/entity"
 
 type UserLogin struct {
-	Email string `json:"email" binding:"required"`
+	Email string `json:"email" binding:"required,email"`
 	Password string `json:"password" binding:"required"`
 }
 

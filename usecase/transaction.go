@@ -1,12 +1,13 @@
 package usecase
 
 import (
+	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/dto"
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/entity"
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/repository"
 )
 
 type TransactionUsecase interface {
-	GetTransactionByWalletId(uint) ([]*entity.Transaction, error)
+	GetTransactionByWalletId(uint, *dto.Pagination) ([]*entity.Transaction, int, error)
 	TopUp(int, *entity.Transaction) (*entity.Transaction, error)
 }
 
@@ -24,8 +25,8 @@ func NewTransactionUsecase(cfg *TransactionUConfig) TransactionUsecase {
 	}
 }
 
-func (t *transactionUsecaseImpl) GetTransactionByWalletId(id uint) ([]*entity.Transaction, error) {
-	return t.transactionRepository.GetTransactionByWalletId(id)
+func (t *transactionUsecaseImpl) GetTransactionByWalletId(id uint, pagination *dto.Pagination) ([]*entity.Transaction, int, error) {
+	return t.transactionRepository.GetTransactionByWalletId(id, pagination)
 }
 
 func (t *transactionUsecaseImpl) TopUp(target int,tr *entity.Transaction) (*entity.Transaction, error) {

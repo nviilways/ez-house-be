@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/dto"
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/entity"
@@ -33,11 +34,29 @@ func (h *Handler) UserGetTransaction(c *gin.Context) {
 	claim, _ := c.Get("claim")
 	parsedClaim := entity.Claim(claim.(entity.Claim))
 
-	result, err := h.transactionUsecase.GetTransactionByWalletId(parsedClaim.WalletID)
+	page, err := strconv.Atoi(c.Query("page"))
+	if page == 0 || err != nil {
+		page = 1
+	}
+
+	limit, err := strconv.Atoi(c.Query("limit"))
+	if limit == 0 || err != nil {
+		limit = 10
+	}
+
+	pagination := &dto.Pagination{
+		Page: page,
+		Limit: limit,
+	}
+
+	result, count, err := h.transactionUsecase.GetTransactionByWalletId(parsedClaim.WalletID, pagination)
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	JSONResponse(c, http.StatusOK, result)
+	pagination.Count = count
+	pagination.Data = result
+
+	JSONResponse(c, http.StatusOK, pagination)
 }
