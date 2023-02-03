@@ -97,8 +97,12 @@ func (r *pickupRepositoryImpl) RequestPickup(pick *entity.Pickup) (*entity.Picku
 	}
 
 	price := pickupCostRate
-	if(reservation.House.CityID == user.CityID) {
+	if(reservation.House.CityID != user.CityID) {
 		price *= 3
+	}
+
+	if(user.Wallet.Balance < price) {
+		return nil, errs.ErrInsufficientBalance
 	}
 
 	err := r.db.Transaction(func(tx *gorm.DB) error {

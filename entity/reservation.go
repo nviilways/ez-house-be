@@ -17,6 +17,7 @@ type Reservation struct {
 	CheckOutDate time.Time `json:"check_out_date"`
 	TotalPrice int `json:"total_price"`
 	BookingCode string `json:"booking_code"`
+	Pickup *Pickup `json:"pickup,omitempty"`
 }
 
 func (Reservation) TableName() string {
