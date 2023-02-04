@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/dto"
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/entity"
 	errs "git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/error"
 	"gorm.io/gorm"
@@ -13,7 +12,6 @@ const pickupCostRate = 100000
 type PickupRepository interface {
 	GetPickupById(uint) (*entity.Pickup, error)
 	GetPickupList() ([]*entity.Pickup, error)
-	GetPickupPrice(*entity.Reservation) (*dto.PickupPrice, error)
 	RequestPickup(*entity.Pickup) (*entity.Pickup, error)
 	UpdateStatus(uint) (*entity.Pickup, error)
 }
@@ -56,24 +54,6 @@ func (p *pickupRepositoryImpl) GetPickupList() ([]*entity.Pickup, error) {
 	}
 
 	return pickup, nil
-}
-
-func (r *pickupRepositoryImpl) GetPickupPrice(res *entity.Reservation) (*dto.PickupPrice, error) {
-	err := r.db.Where("id = ?", res.ID).Preload("House").Preload("User").First(&res).Error
-	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return nil, errs.ErrRecordNotFound
-		}
-		return nil, err
-	}
-
-	var price *dto.PickupPrice
-	price.Price = pickupCostRate
-	if res.User.CityID != res.House.CityID {
-		price.Price *= 3
-	}
-
-	return price, nil
 }
 
 func (r *pickupRepositoryImpl) RequestPickup(pick *entity.Pickup) (*entity.Pickup, error) {

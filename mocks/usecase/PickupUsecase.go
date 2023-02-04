@@ -3,9 +3,7 @@
 package mocks
 
 import (
-	dto "git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/dto"
 	entity "git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/entity"
-
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -53,29 +51,6 @@ func (_m *PickupUsecase) GetPickupList() ([]*entity.Pickup, error) {
 	var r1 error
 	if rf, ok := ret.Get(1).(func() error); ok {
 		r1 = rf()
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// GetPickupPrice provides a mock function with given fields: _a0
-func (_m *PickupUsecase) GetPickupPrice(_a0 *entity.Reservation) (*dto.PickupPrice, error) {
-	ret := _m.Called(_a0)
-
-	var r0 *dto.PickupPrice
-	if rf, ok := ret.Get(0).(func(*entity.Reservation) *dto.PickupPrice); ok {
-		r0 = rf(_a0)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*dto.PickupPrice)
-		}
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func(*entity.Reservation) error); ok {
-		r1 = rf(_a0)
 	} else {
 		r1 = ret.Error(1)
 	}
