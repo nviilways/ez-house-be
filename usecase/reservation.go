@@ -1,12 +1,13 @@
 package usecase
 
 import (
+	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/dto"
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/entity"
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/repository"
 )
 
 type ReservationUsecase interface {
-	GetReservationListByUserId(uint) ([]*entity.Reservation, error)
+	GetReservationListByUserId(uint, *dto.Pagination) ([]*entity.Reservation, int, error)
 	GetReservationById(uint) (*entity.Reservation, error)
 	AddReservation(*entity.Reservation) (*entity.Reservation, error)
 }
@@ -29,8 +30,8 @@ func (r *reservationUsecaseImpl) AddReservation(res *entity.Reservation) (*entit
 	return r.reservationRepository.AddReservation(res)
 }
 
-func (r *reservationUsecaseImpl) GetReservationListByUserId(id uint) ([]*entity.Reservation, error) {
-	return r.reservationRepository.GetReservationListByUserId(id)
+func (r *reservationUsecaseImpl) GetReservationListByUserId(id uint, pagination *dto.Pagination) ([]*entity.Reservation, int, error) {
+	return r.reservationRepository.GetReservationListByUserId(id, pagination)
 }
 
 func (r *reservationUsecaseImpl) GetReservationById(id uint) (*entity.Reservation, error) {

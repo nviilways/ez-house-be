@@ -62,11 +62,29 @@ func (h *Handler) UserGetReservationByUserId(c *gin.Context) {
 	claim, _ := c.Get("claim")
 	parsedClaim := entity.Claim(claim.(entity.Claim))
 
-	result, err := h.reservationUsecase.GetReservationListByUserId(parsedClaim.ID)
+	page, err := strconv.Atoi(c.Query("page"))
+	if page == 0 || err != nil {
+		page = 1
+	}
+
+	limit, err := strconv.Atoi(c.Query("limit"))
+	if limit == 0 || err != nil {
+		limit = 10
+	}
+
+	pagination := &dto.Pagination{
+		Limit: limit,
+		Page: page,
+	}
+
+	result, count, err := h.reservationUsecase.GetReservationListByUserId(parsedClaim.ID, pagination)
 	if err != nil {
 		errorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	JSONResponse(c, http.StatusOK, result)
+	pagination.Count = count
+	pagination.Data = result
+
+	JSONResponse(c, http.StatusOK, pagination)
 }

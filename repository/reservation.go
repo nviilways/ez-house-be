@@ -5,6 +5,7 @@ import (
 	"math"
 	"time"
 
+	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/dto"
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/entity"
 	errs "git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/error"
 	"gorm.io/gorm"
@@ -16,7 +17,7 @@ const commissionType = 4
 const commissionPay = 0.8
 
 type ReservationRepository interface {
-	GetReservationListByUserId(uint) ([]*entity.Reservation, error)
+	GetReservationListByUserId(uint, *dto.Pagination) ([]*entity.Reservation, int, error)
 	GetReservationById(uint) (*entity.Reservation, error)
 	AddReservation(*entity.Reservation) (*entity.Reservation, error)
 }
@@ -170,18 +171,26 @@ func (r *reservationRepositoryImpl) AddReservation(res *entity.Reservation) (*en
 	return res, nil
 }
 
-func (r *reservationRepositoryImpl) GetReservationListByUserId(id uint) ([]*entity.Reservation, error) {
+func (r *reservationRepositoryImpl) GetReservationListByUserId(id uint, pagination *dto.Pagination) ([]*entity.Reservation, int, error) {
 	var res []*entity.Reservation
+	var count int64
 
-	err := r.db.Where("user_id = ?", id).Preload("House.City").Find(&res).Error
+	err := r.db.Where("user_id = ?", id).Preload("House.City").Limit(pagination.Limit).Offset((pagination.Page - 1) * pagination.Limit).Find(&res).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return nil, errs.ErrRecordNotFound
+			return nil, 0, errs.ErrRecordNotFound
 		}
-		return nil, err
+		return nil, 0, err
 	}
 
-	return res, nil
+	errCount := r.db.Model(&entity.Reservation{}).Where("user_id = ?", id).Count(&count).Error
+	if errCount != nil {
+		return nil, 0, errCount
+	}
+
+	retCount := int(count)
+
+	return res, retCount, nil
 }
 
 func (r *reservationRepositoryImpl) GetReservationById(id uint) (*entity.Reservation, error) {
