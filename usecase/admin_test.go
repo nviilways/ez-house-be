@@ -16,8 +16,10 @@ func TestAdminSignIn(t *testing.T) {
 	t.Run("should return token when successfully logged in", func(t *testing.T) {
 		hashedPw, _ := utils.HashAndSalt("password")
 		admin := &entity.Admin{
+			ID: 1,
 			Email:    "user@mail.com",
 			Password: hashedPw,
+			RoleID: 4,
 		}
 		mockRepository := new(mocks.AdminRepository)
 		usecase := usecase.NewAdminUsecase(&usecase.AdminUConfig{

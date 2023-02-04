@@ -3,7 +3,9 @@
 package mocks
 
 import (
+	dto "git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/dto"
 	entity "git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/entity"
+
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -33,6 +35,59 @@ func (_m *ReservationUsecase) AddReservation(_a0 *entity.Reservation) (*entity.R
 	}
 
 	return r0, r1
+}
+
+// GetReservationById provides a mock function with given fields: _a0
+func (_m *ReservationUsecase) GetReservationById(_a0 uint) (*entity.Reservation, error) {
+	ret := _m.Called(_a0)
+
+	var r0 *entity.Reservation
+	if rf, ok := ret.Get(0).(func(uint) *entity.Reservation); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*entity.Reservation)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(uint) error); ok {
+		r1 = rf(_a0)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetReservationListByUserId provides a mock function with given fields: _a0, _a1
+func (_m *ReservationUsecase) GetReservationListByUserId(_a0 uint, _a1 *dto.Pagination) ([]*entity.Reservation, int, error) {
+	ret := _m.Called(_a0, _a1)
+
+	var r0 []*entity.Reservation
+	if rf, ok := ret.Get(0).(func(uint, *dto.Pagination) []*entity.Reservation); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*entity.Reservation)
+		}
+	}
+
+	var r1 int
+	if rf, ok := ret.Get(1).(func(uint, *dto.Pagination) int); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		r1 = ret.Get(1).(int)
+	}
+
+	var r2 error
+	if rf, ok := ret.Get(2).(func(uint, *dto.Pagination) error); ok {
+		r2 = rf(_a0, _a1)
+	} else {
+		r2 = ret.Error(2)
+	}
+
+	return r0, r1, r2
 }
 
 type mockConstructorTestingTNewReservationUsecase interface {

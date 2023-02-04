@@ -28,13 +28,19 @@ func GenerateAccessToken(user *entity.User) (*dto.Token, error) {
 		ID: user.ID,
 		Email: user.Email,
 		RoleID: user.RoleID,
-		WalletID: user.Wallet.ID,
 		RegisteredClaims: jwt.RegisteredClaims{
 			IssuedAt: jwt.NewNumericDate(time.Now()),
 			Issuer: "Ez House",
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 5)),
 		},
 	}
+
+	if(user.RoleID != 1 && user.RoleID != 4){
+		if(user.Wallet != nil) {
+			claims.WalletID = user.Wallet.ID
+		}
+	}
+
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, _ := token.SignedString([]byte(config.SecretKey))
 
