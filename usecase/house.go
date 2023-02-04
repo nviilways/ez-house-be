@@ -16,7 +16,6 @@ type HouseUsecase interface {
 	AddHouse(*entity.House, []*multipart.FileHeader) (*entity.House, error)
 	UpdateHouse(uint, *entity.House) (*entity.House, error)
 	DeleteHouse(uint, uint) (*entity.House, error)
-	AddPhotoHouse(*entity.Photo, []*multipart.FileHeader) (*entity.Photo, error)
 }
 
 type houseUsecaseImpl struct {
@@ -59,8 +58,4 @@ func (h *houseUsecaseImpl) UpdateHouse(id uint, house *entity.House) (*entity.Ho
 
 func (h *houseUsecaseImpl) DeleteHouse(id uint, user_id uint) (*entity.House, error) {
 	return h.houseRepository.DeleteHouse(id, user_id)
-}
-
-func (h *houseUsecaseImpl) AddPhotoHouse(ph *entity.Photo, photos []*multipart.FileHeader) (*entity.Photo, error) {
-	return h.houseRepository.AddPhotoHouse(ph)
 }
