@@ -17,7 +17,7 @@ git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-bookin
 git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/usecase/reservation.go:33.134,35.2 1 1
 git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/usecase/reservation.go:37.91,39.2 1 1
 git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/usecase/transaction.go:22.72,26.2 1 1
-git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/usecase/transaction.go:28.132,30.2 1 0
+git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/usecase/transaction.go:28.132,30.2 1 1
 git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/usecase/transaction.go:32.104,34.2 1 1
 git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/usecase/user.go:29.51,33.2 1 1
 git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/usecase/user.go:35.84,38.17 2 1
@@ -44,3 +44,10 @@ git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-bookin
 git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/usecase/admin.go:50.79,56.16 4 1
 git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/usecase/admin.go:60.2,60.20 1 1
 git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/usecase/admin.go:56.16,58.3 1 1
+git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/utils/utils.go:15.46,19.2 2 1
+git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/utils/utils.go:21.62,24.2 2 1
+git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/utils/utils.go:26.65,38.42 2 1
+git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/utils/utils.go:44.2,51.20 4 1
+git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/utils/utils.go:38.42,39.26 1 0
+git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/utils/utils.go:39.26,41.4 1 0
+git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/utils/utils.go:54.38,58.2 3 0
