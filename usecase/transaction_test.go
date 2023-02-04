@@ -11,7 +11,7 @@ import (
 )
 
 func TestTopUp(t *testing.T) {
-	t.Run("should return nil when top up successful", func(t *testing.T) {
+	t.Run("should return error nil when top up successful", func(t *testing.T) {
 		userId := 1
 		tx := &entity.Transaction{
 			ID: 1,
