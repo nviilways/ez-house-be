@@ -10,6 +10,7 @@ type Pickup struct {
 	ReservationID uint `json:"reservation_id"`
 	Reservation *Reservation `json:"reservation,omitempty"`
 	PickupStatusID uint `json:"pickup_status_id"`
+	PickupStatus *PickupStatus `json:"pickup_status"`
 }
 
 func (Pickup) TableName() string {

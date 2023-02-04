@@ -196,7 +196,7 @@ func (r *reservationRepositoryImpl) GetReservationListByUserId(id uint, paginati
 func (r *reservationRepositoryImpl) GetReservationById(id uint) (*entity.Reservation, error) {
 	var res *entity.Reservation
 
-	err := r.db.Where("id = ?", id).Preload("House.City").Preload("House.Photo").Preload("Pickup").Preload("User").First(&res).Error
+	err := r.db.Where("id = ?", id).Preload("House.City").Preload("House.Photo").Preload("Pickup.PickupStatus").Preload("User").First(&res).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, errs.ErrRecordNotFound
