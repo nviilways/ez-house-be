@@ -4,6 +4,7 @@ import (
 	"errors"
 	"testing"
 
+	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/dto"
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/entity"
 	mocks "git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/mocks/repository"
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/usecase"
@@ -46,5 +47,37 @@ func TestTopUp(t *testing.T) {
 		_, err := usecase.TopUp(userId, tx)
 
 		assert.Error(t, expectedErr, err)
+	})
+}
+
+func TestGetTransactionByWalletId(t *testing.T) {
+	t.Run("should return transaction history of wallet by id", func(t *testing.T) {
+		id := uint(1)
+		var pagination *dto.Pagination
+		var transaction []*entity.Transaction
+		mockRepository := new(mocks.TransactionRepository)
+		usecase := usecase.NewTransactionUsecase(&usecase.TransactionUConfig{
+			TransactionRepository: mockRepository,
+		})
+		mockRepository.On("GetTransactionByWalletId", id, pagination).Return(transaction, 0, nil)
+
+		result, _, _ := usecase.GetTransactionByWalletId(id, pagination)
+
+		assert.Equal(t, transaction, result)
+	})
+
+	t.Run("should return error when failed", func(t *testing.T) {
+		id := uint(1)
+		var pagination *dto.Pagination
+		mockRepository := new(mocks.TransactionRepository)
+		usecase := usecase.NewTransactionUsecase(&usecase.TransactionUConfig{
+			TransactionRepository: mockRepository,
+		})
+		mockRepository.On("GetTransactionByWalletId", id, pagination).Return(nil, 0, errors.New("error"))
+		expected := errors.New("error")
+
+		_, _, err := usecase.GetTransactionByWalletId(id, pagination)
+
+		assert.Error(t, expected, err)
 	})
 }

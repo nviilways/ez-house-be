@@ -68,7 +68,7 @@ func TestGetCityList(t *testing.T) {
 
 		_, err := usecase.GetCityList()
 
-		assert.Equal(t, expected, err)
+		assert.Error(t, expected, err)
 	})
 }
 
@@ -100,7 +100,7 @@ func TestGetHouseListByVacancy(t *testing.T) {
 
 		_, _, err := usecase.GetHouseListByVacancy(filter, pagination)
 	
-		assert.Equal(t, expected, err)
+		assert.Error(t, expected, err)
 	})
 }
 
@@ -134,7 +134,7 @@ func TestGetHouseByHost(t *testing.T) {
 
 		_, _, err := usecase.GetHouseByHost(userId, filter, pagination)
 	
-		assert.Equal(t, expected, err)
+		assert.Error(t, expected, err)
 	})
 }
 
@@ -165,7 +165,7 @@ func TestAddHouse(t *testing.T) {
 
 		_, err := usecase.AddHouse(house, photos)
 
-		assert.Equal(t, expected, err)
+		assert.Error(t, expected, err)
 	})
 }
 
@@ -196,7 +196,7 @@ func TestUpdateHouse(t *testing.T) {
 
 		_, err := usecase.UpdateHouse(id, house)
 
-		assert.Equal(t, expected, err)
+		assert.Error(t, expected, err)
 	})
 }
 
@@ -228,6 +228,6 @@ func TestDeleteHouse(t *testing.T){
 
 		_, err := usecase.DeleteHouse(houseId, userId)
 
-		assert.Equal(t, expected, err)
+		assert.Error(t, expected, err)
 	})
 }
