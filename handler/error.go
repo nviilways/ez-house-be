@@ -25,7 +25,7 @@ func errorTag(c *gin.Context, err error) {
 func errorResponse(c *gin.Context, code int, message string) {
 	c.JSON(code, dto.JSONResponse{
 		Code: code,
-		Message: errs.ErrorCode[code],
+		Message: message,
 		Data: nil,
 	})
 }

@@ -111,7 +111,7 @@ func TestUserTopUp(t *testing.T) {
 		}
 		result := dto.JSONResponse{
 			Code: 500,
-			Message: errs.ErrorCode[500],
+			Message: "error",
 			Data: nil,
 		}
 		expectedBody, _ := json.Marshal(result)
@@ -184,7 +184,7 @@ func TestUserGetTransaction(t *testing.T) {
 		}
 		result := dto.JSONResponse{
 			Code: 500,
-			Message: errs.ErrorCode[500],
+			Message: "error",
 			Data: nil,
 		}
 		expectedBody, _ := json.Marshal(result)

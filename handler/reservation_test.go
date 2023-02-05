@@ -5,6 +5,7 @@ import (
 	"errors"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"testing"
 
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/dto"
@@ -107,7 +108,7 @@ func TestUserAddReservation(t *testing.T) {
 		toReserve.UserId = claim.ID
 		result := dto.JSONResponse{
 			Code: 400,
-			Message: errs.ErrorCode[400],
+			Message: errs.ErrDuplicateEntry.Error(),
 			Data: nil,
 		}
 		expectedBody, _ := json.Marshal(result)
@@ -144,7 +145,7 @@ func TestUserAddReservation(t *testing.T) {
 		toReserve.UserId = claim.ID
 		result := dto.JSONResponse{
 			Code: 500,
-			Message: errs.ErrorCode[500],
+			Message: "error",
 			Data: nil,
 		}
 		expectedBody, _ := json.Marshal(result)
@@ -203,9 +204,10 @@ func TestUserGetReservationById(t *testing.T) {
 			ID: 1,
 		}
 		id := uint(1)
+		_, getError := strconv.Atoi("")
 		result := dto.JSONResponse{
 			Code: 400,
-			Message: errs.ErrorCode[400],
+			Message: getError.Error(),
 			Data: nil,
 		}
 		expectedBody, _ := json.Marshal(result)
@@ -229,7 +231,7 @@ func TestUserGetReservationById(t *testing.T) {
 		id := uint(1)
 		result := dto.JSONResponse{
 			Code: 400,
-			Message: errs.ErrorCode[400],
+			Message: errs.ErrRecordNotFound.Error(),
 			Data: nil,
 		}
 		expectedBody, _ := json.Marshal(result)
@@ -257,7 +259,7 @@ func TestUserGetReservationById(t *testing.T) {
 		id := uint(1)
 		result := dto.JSONResponse{
 			Code: 500,
-			Message: errs.ErrorCode[500],
+			Message: "error",
 			Data: nil,
 		}
 		expectedBody, _ := json.Marshal(result)
@@ -333,7 +335,7 @@ func TestUserGetReservationByUserId(t *testing.T) {
 		}
 		result := dto.JSONResponse{
 			Code: 500,
-			Message: errs.ErrorCode[500],
+			Message: "error",
 			Data: nil,
 		}
 		expectedBody, _ := json.Marshal(result)

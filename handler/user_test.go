@@ -80,7 +80,7 @@ func TestUserRegister(t *testing.T) {
 		}
 		result := &dto.JSONResponse{
 			Code: 409,
-			Message: errs.ErrorCode[409],
+			Message: errs.ErrDuplicateEntry.Error(),
 			Data: nil,
 		}
 		expectedBody, _ := json.Marshal(result)
@@ -107,7 +107,7 @@ func TestUserRegister(t *testing.T) {
 		}
 		result := &dto.JSONResponse{
 			Code: 500,
-			Message: errs.ErrorCode[500],
+			Message: "error",
 			Data: nil,
 		}
 		expectedBody, _ := json.Marshal(result)
@@ -180,7 +180,7 @@ func TestUserLogin(t *testing.T) {
 		}
 		result := &dto.JSONResponse{
 			Code: 400,
-			Message: errs.ErrorCode[400],
+			Message: errs.ErrInvalidCredential.Error(),
 			Data: nil,
 		}
 		expectedBody, _ := json.Marshal(result)
@@ -203,7 +203,7 @@ func TestUserLogin(t *testing.T) {
 		}
 		result := &dto.JSONResponse{
 			Code: 500,
-			Message: errs.ErrorCode[500],
+			Message: "error",
 			Data: nil,
 		}
 		expectedBody, _ := json.Marshal(result)
@@ -320,7 +320,7 @@ func TestUserDetails(t *testing.T) {
 		}
 		result := dto.JSONResponse{
 			Code: 401,
-			Message: errs.ErrorCode[401],
+			Message: "error",
 			Data: nil,
 		}
 		expectedBody, _ := json.Marshal(result)
@@ -355,7 +355,7 @@ func TestUserDetails(t *testing.T) {
 		}
 		result := dto.JSONResponse{
 			Code: 500,
-			Message: errs.ErrorCode[500],
+			Message: "error",
 			Data: nil,
 		}
 		expectedBody, _ := json.Marshal(result)
@@ -435,7 +435,7 @@ func TestUserUpdate(t *testing.T) {
 		}
 		result := dto.JSONResponse{
 			Code: 401,
-			Message: errs.ErrorCode[401],
+			Message: "invalid token",
 			Data: nil,
 		}
 		expectedBody, _ := json.Marshal(result)
@@ -474,7 +474,7 @@ func TestUserUpdate(t *testing.T) {
 		}
 		result := dto.JSONResponse{
 			Code: 401,
-			Message: errs.ErrorCode[401],
+			Message: "error",
 			Data: nil,
 		}
 		expectedBody, _ := json.Marshal(result)
@@ -513,7 +513,7 @@ func TestUserUpdate(t *testing.T) {
 		}
 		result := dto.JSONResponse{
 			Code: 500,
-			Message: errs.ErrorCode[500],
+			Message: "error",
 			Data: nil,
 		}
 		expectedBody, _ := json.Marshal(result)
@@ -576,7 +576,7 @@ func TestUserUpdateRole(t *testing.T) {
 		}
 		result := dto.JSONResponse{
 			Code: 401,
-			Message: errs.ErrorCode[401],
+			Message: "error",
 			Data: nil,
 		}
 		expectedBody, _ := json.Marshal(result)
@@ -608,7 +608,7 @@ func TestUserUpdateRole(t *testing.T) {
 		}
 		result := dto.JSONResponse{
 			Code: 500,
-			Message: errs.ErrorCode[500],
+			Message: "error",
 			Data: nil,
 		}
 		expectedBody, _ := json.Marshal(result)

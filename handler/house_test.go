@@ -10,7 +10,6 @@ import (
 
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/dto"
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/entity"
-	errs "git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/error"
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/handler"
 	mocks "git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/mocks/usecase"
 	"github.com/gin-gonic/gin"
@@ -90,7 +89,7 @@ func TestUserGetHouseByVacancy(t *testing.T) {
 		}
 		result := dto.JSONResponse{
 			Code: 500,
-			Message: errs.ErrorCode[500],
+			Message: "error",
 			Data: nil,
 		}
 		expectedBody, _ := json.Marshal(result)
