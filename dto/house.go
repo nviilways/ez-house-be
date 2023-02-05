@@ -29,11 +29,11 @@ type NewHouse struct {
 
 type UpdateHouse struct {
 	Name string `form:"name"`
-	Price int `form:"price" binding:"min=1"`
+	Price int `form:"price"`
 	Description string `form:"description"`
 	Address string `form:"address"`
 	CityID uint `form:"city_id"`
-	MaxGuest int `form:"max_guest" binding:"min=1"`
+	MaxGuest int `form:"max_guest"`
 }
 
 func (n *NewHouse) ToHouse() *entity.House {
