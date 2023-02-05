@@ -59,6 +59,8 @@ func (u *userUsecaseImpl) SignUp(user *entity.User) (*entity.User, error) {
 		return nil, err
 	}
 
+	result.Password = ""
+
 	return result, nil
 }
 

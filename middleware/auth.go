@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/config"
+	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/dto"
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/entity"
 	errs "git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/error"
 	"github.com/gin-gonic/gin"
@@ -15,9 +16,10 @@ func JWTAuthorization(c *gin.Context) {
 	auth := c.GetHeader("authorization")
 
 	if auth == "" {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"code" : errs.ErrorCode[http.StatusUnauthorized],
-			"message" : "unable to find user auth",
+		c.AbortWithStatusJSON(http.StatusUnauthorized, dto.JSONResponse{
+			Code: http.StatusUnauthorized,
+			Message: errs.ErrorCode[http.StatusUnauthorized],
+			Data: nil,
 		})
 		return
 	}
@@ -29,18 +31,20 @@ func JWTAuthorization(c *gin.Context) {
 	})
 
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"code" : errs.ErrorCode[http.StatusUnauthorized],
-			"message" : "unable to parse token",
+		c.AbortWithStatusJSON(http.StatusUnauthorized, dto.JSONResponse{
+			Code: http.StatusUnauthorized,
+			Message: errs.ErrorCode[http.StatusUnauthorized],
+			Data: nil,
 		})
 		return
 	}
 
 	claim, ok := parsedToken.Claims.(*entity.Claim)
 	if !ok {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"code" : errs.ErrorCode[http.StatusUnauthorized],
-			"message" : "invalid token",
+		c.AbortWithStatusJSON(http.StatusUnauthorized, dto.JSONResponse{
+			Code: http.StatusUnauthorized,
+			Message: errs.ErrorCode[http.StatusUnauthorized],
+			Data: nil,
 		})
 		return
 	}

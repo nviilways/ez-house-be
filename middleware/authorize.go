@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/dto"
+	errs "git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/error"
 	"git.garena.com/sea-labs-id/batch-05/adithya-kurniawan/final-project/house-booking-be/entity"
 	"github.com/gin-gonic/gin"
 )
@@ -19,7 +20,8 @@ func AuthorizeSuperAdmin(c *gin.Context) {
 	if(parsedClaim.RoleID != superAdminRoleId){
 		c.AbortWithStatusJSON(http.StatusForbidden, dto.JSONResponse{
 			Code: http.StatusForbidden,
-			Message: "forbidden access",
+			Message: errs.ErrorCode[http.StatusForbidden],
+			Data: nil,
 		})
 	}
 }
@@ -31,7 +33,8 @@ func AuthorizeAdmin(c *gin.Context) {
 	if(parsedClaim.RoleID != adminRoleId){
 		c.AbortWithStatusJSON(http.StatusForbidden, dto.JSONResponse{
 			Code: http.StatusForbidden,
-			Message: "forbidden access",
+			Message: errs.ErrorCode[http.StatusForbidden],
+			Data: nil,
 		})
 	}
 }
@@ -43,7 +46,8 @@ func AuthorizeHost(c *gin.Context) {
 	if(parsedClaim.RoleID != hostRoleId){
 		c.AbortWithStatusJSON(http.StatusForbidden, dto.JSONResponse{
 			Code: http.StatusForbidden,
-			Message: "forbidden access",
+			Message: errs.ErrorCode[http.StatusForbidden],
+			Data: nil,
 		})
 	}
 }
@@ -55,7 +59,8 @@ func AuthorizeAdminOrHost(c *gin.Context) {
 	if(parsedClaim.RoleID != hostRoleId && parsedClaim.RoleID != superAdminRoleId && parsedClaim.RoleID != adminRoleId) {
 		c.AbortWithStatusJSON(http.StatusForbidden, dto.JSONResponse{
 			Code: http.StatusForbidden,
-			Message: "forbidden access",
+			Message: errs.ErrorCode[http.StatusForbidden],
+			Data: nil,
 		})
 	}
 }

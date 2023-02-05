@@ -55,7 +55,6 @@ func NewRouter(cfg *RouterConfig) *gin.Engine {
 			house.PATCH("/:id", middleware.JWTAuthorization, middleware.AuthorizeHost, h.HostUpdateHouse)
 			house.GET("/host", middleware.JWTAuthorization, middleware.AuthorizeHost, h.UserGetHouseByHost)
 			house.POST("/:id/photos", middleware.JWTAuthorization, middleware.AuthorizeHost, h.HostAddPhotoHouse)
-			// house.POST("/:id/photo/:id", middleware.JWTAuthorization, middleware.AuthorizeHost, h.HostDeletePhotoHouse)
 		}
 		reservation := v1API.Group("/reservations")
 		{
