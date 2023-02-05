@@ -12,7 +12,7 @@ type UserRegister struct {
 	Password string `json:"password" binding:"required"`
 	FullName string `json:"full_name"` 
 	Address string `json:"address"`
-	CityID uint `json:"city_id"`
+	CityID uint `json:"city_id" binding:"required"`
 }
 
 type UserUpdate struct {
