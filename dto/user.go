@@ -18,7 +18,7 @@ type UserRegister struct {
 type UserUpdate struct {
 	FullName string `json:"full_name,omitempty"`
 	Address string `json:"address,omitempty"`
-	CityID uint `json:"city_id,omitempty"`
+	CityID uint `json:"city_id,omitempty" binding:"numeric"`
 }
 
 func (u *UserLogin) ToUser() *entity.User {
